@@ -63,7 +63,7 @@ const Footer = () => {
         <div className="container-fluid bg-dark text-white">
           <div className="row ">
             <div className="col-md-3 py-3">
-              <div className="h6">Company Name</div>
+              <div className="h6">E-COM</div>
               <hr />
               <p>
                 Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -186,25 +186,11 @@ const Footer = () => {
         </div>
         <div className="container-fluid bg-secondary text-white text-center">
           <div className="row">
-            <div className="col-md-2 py-2">
-              <Link to="/" className="text-white text-decoration-none">
-                <IconBriefcase className="text-warning" /> Partner with us
-              </Link>
-            </div>
-            <div className="col-md-2 py-2">
-              <Link to="/" className="text-white text-decoration-none">
-                <IconBadgeAd className="text-info" /> Advertise
-              </Link>
-            </div>
-            <div className="col-md-2 py-2">
-              <Link to="/" className="text-white text-decoration-none">
-                <IconGift className="text-dark" /> Gift
-              </Link>
-            </div>
-            <div className="col-md-3 py-2">
+          
+            <div className="col-md-6 py-2">
               © 2009-{new Date().getFullYear()} React-E-Commerce.com
             </div>
-            <div className="col-md-3 py-2 bg-white">
+            <div className="col-md-6 py-2 bg-white">
               <img
                 src="../../images/payment/american_express.webp"
                 width="32"
