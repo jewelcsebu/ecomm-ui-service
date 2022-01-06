@@ -5,10 +5,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const CardProductGrid = (props) => {
+
+  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
+
+
   const product = props.data;
   return (
     <div className="card">
-      <img src={product.img} className="card-img-top" alt="..." />
+      <img src={image+product.productImages[0]} className="card-img-top" alt="..." />
       {product.isNew && (
         <span className="badge bg-success position-absolute mt-2 ml-2">
           New
@@ -19,7 +23,7 @@ const CardProductGrid = (props) => {
           Hot
         </span>
       )}
-      {(product.discountPercentage > 0 || product.discountPrice > 0) && (
+      {(product.discountPercentage > 0 || product.productFinalPrice > 0) && (
         <span
           className={`rounded position-absolute p-2 bg-warning  ml-2 small ${
             product.isNew ? "mt-5" : "mt-2"
@@ -28,19 +32,19 @@ const CardProductGrid = (props) => {
           -
           {product.discountPercentage > 0
             ? product.discountPercentage + "%"
-            : "$" + product.discountPrice}
+            : "$" + product.productFinalPrice}
         </span>
       )}
       <div className="card-body">
         <h6 className="card-subtitle mb-2">
-          <Link to={product.link} className="text-decoration-none">
-            {product.name}
+          <Link to={product.productSlug} className="text-decoration-none">
+            {product.productTitle}
           </Link>
         </h6>
         <div className="my-2">
-          <span className="font-weight-bold h5">${product.price}</span>
-          {product.originPrice > 0 && (
-            <del className="small text-muted ml-2">${product.originPrice}</del>
+          <span className="font-weight-bold h5">${product.productFinalPrice}</span>
+          {product.productOriginalPrice > 0 && (
+            <del className="small text-muted ml-2">${product.productOriginalPrice}</del>
           )}
           <span className="ml-2">
             {Array.from({ length: product.star }, (_, key) => (

@@ -1,4 +1,7 @@
 import React from "react";
+import {cartService} from '../../axios'
+import qs from 'qs';
+
 import { Link } from "react-router-dom";
 import { ReactComponent as IconStarFill } from "bootstrap-icons/icons/star-fill.svg";
 import { ReactComponent as IconTruckFill } from "bootstrap-icons/icons/truck.svg";
@@ -6,18 +9,53 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const CardProductList = (props) => {
+
+  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
+
+  const userid = 10;
+  
+  const values ={
+    "customerId":3,
+    "productId":3,
+    "qty":1
+}
+
+
+  const addTocart = (id) =>{
+    console.log(values)
+    
+    cartService.post('add-to-cart',values,{
+
+
+      
+      headers: {
+        'content-type': 'application/json'
+    }
+
+          })
+    .then(res => console.log(res))
+    .catch(err => console.log(err))
+
+
+
+
+  }
+
+
   const product = props.data;
+  console.log(product)
+  console.log(product.productImages[0])
   return (
     <div className="card">
       <div className="row g-0">
         <div className="col-md-3 text-center">
-          <img src={product.img} className="img-fluid" alt="..." />
+          <img src={image+product.productImages[0]} className="img-fluid" alt="..." />
         </div>
         <div className="col-md-6">
           <div className="card-body">
             <h6 className="card-subtitle mr-2 d-inline">
-              <Link to={product.link} className="text-decoration-none">
-                {product.name}
+              <Link to={product.productSlug} className="text-decoration-none">
+                {product.productTitle}
               </Link>
             </h6>
             {product.isNew && (
@@ -54,18 +92,18 @@ const CardProductList = (props) => {
         <div className="col-md-3">
           <div className="card-body">
           <div className="mb-2">
-            <span className="font-weight-bold h5">${product.price}</span>
-            {product.originPrice > 0 && (
+            <span className="font-weight-bold h5">${product.productFinalPrice}</span>
+            {product.productOriginalPrice > 0 && (
               <del className="small text-muted ml-2">
-                ${product.originPrice}
+                ${product.productOriginalPrice}
               </del>
             )}
-            {(product.discountPercentage > 0 || product.discountPrice > 0) && (
+            {(product.discountPercentage > 0 || product.productFinalPrice > 0) && (
               <span className={`rounded p-1 bg-warning ml-2 small`}>
                 -
                 {product.discountPercentage > 0
                   ? product.discountPercentage + "%"
-                  : "$" + product.discountPrice}
+                  : "$" + product.productFinalPrice}
               </span>
             )}
           </div>
@@ -80,6 +118,7 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-primary"
               title="Add to cart"
+              onClick={()=>addTocart(product.id)}
             >
               <FontAwesomeIcon icon={faCartPlus} />
             </button>

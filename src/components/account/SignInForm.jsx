@@ -51,7 +51,7 @@ const SignInForm = (props) => {
         validate={[required, maxLength20, minLength8]}
         required={true}
         maxLength="20"
-        minLength="8"
+        minLength="3"
         className="mb-3"
       />
       <button

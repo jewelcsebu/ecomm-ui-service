@@ -1,5 +1,7 @@
 import React, { lazy, Component } from "react";
 import { data } from "../../data";
+
+import {productService} from '../../axios'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faBars } from "@fortawesome/free-solid-svg-icons";
 const Paging = lazy(() => import("../../components/Paging"));
@@ -19,6 +21,7 @@ const CardProductList = lazy(() =>
   import("../../components/card/CardProductList")
 );
 
+
 class ProductListView extends Component {
   state = {
     currentProducts: [],
@@ -26,11 +29,19 @@ class ProductListView extends Component {
     totalPages: null,
     totalItems: 0,
     view: "list",
+    products:[],
   };
+  
 
   UNSAFE_componentWillMount() {
     const totalItems = this.getProducts().length;
-    this.setState({ totalItems });
+
+    try{
+      this.setState({ totalItems });
+    }catch(e){
+      console.log(e)
+    }
+    
   }
 
   onPageChanged = (page) => {
@@ -42,6 +53,7 @@ class ProductListView extends Component {
   };
 
   onChangeView = (view) => {
+    console.log(this.state.products)
     this.setState({ view });
   };
 
@@ -54,6 +66,45 @@ class ProductListView extends Component {
     products = products.concat(products);
     return products;
   };
+
+  
+  // componentDidMount() {
+
+  //   console.log(this.state.view)
+  //   async function fetchAllProducts() {
+  //     productService.get("get/products", {
+  //         headers: {
+  //             'user-agent': 'Mozilla/4.0 MDN Example',
+  //             'content-type': 'application/json'
+  //         }
+  //     }).then(res => {
+  //         console.log(res.data.data)
+  //         this.state.products = ree
+  //         this.setState({
+  //           products:res.data.data
+  //         })
+  //     }).catch(error => {
+  //       console.log(error)
+  //     })
+  // }
+
+  // fetchAllProducts();
+  // }
+
+  componentDidMount(){
+        productService.get("get/products", {
+            headers: {
+                'user-agent': 'Mozilla/4.0 MDN Example',
+                'content-type': 'application/json'
+            }
+        }).then(res => { 
+            this.setState({
+              products: res.data.data
+            })
+        }).catch(error => {
+          console.log(error)
+        })
+  }
 
   render() {
     return (
@@ -131,9 +182,10 @@ class ProductListView extends Component {
                 </div>
               </div>
               <hr />
-              <div className="row g-3">
+              <div className="row g-3"> 
+
                 {this.state.view === "grid" &&
-                  this.state.currentProducts.map((product, idx) => {
+                  this.state.products.map((product, idx) => {
                     return (
                       <div key={idx} className="col-md-4">
                         <CardProductGrid data={product} />
@@ -141,7 +193,8 @@ class ProductListView extends Component {
                     );
                   })}
                 {this.state.view === "list" &&
-                  this.state.currentProducts.map((product, idx) => {
+                  this.state.products.map((product, idx) => {
+                    console.log(product)
                     return (
                       <div key={idx} className="col-md-12">
                         <CardProductList data={product} />
