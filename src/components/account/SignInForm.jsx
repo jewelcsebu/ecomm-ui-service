@@ -28,7 +28,7 @@ const SignInForm = (props) => {
       className={`needs-validation ${submitFailed ? "was-validated" : ""}`}
       noValidate
     >
-      <Field
+      {/* <Field
         name="mobileNo"
         type="number"
         label="Mobile no"
@@ -53,7 +53,7 @@ const SignInForm = (props) => {
         maxLength="20"
         minLength="3"
         className="mb-3"
-      />
+      /> */}
       <button
         type="submit"
         className="btn btn-primary btn-block mb-3"

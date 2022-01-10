@@ -1,10 +1,11 @@
 
 
-
+import { encode } from "base-64";
 import React, { lazy, Component } from "react";
 import { Link } from "react-router-dom";
 import { authService } from "../../axios";
 var axios = require("axios");
+const querystring = require('querystring');
 
 
 const SignInForm = lazy(() => import("../../components/account/SignInForm"));
@@ -17,9 +18,9 @@ class SignInView extends Component {
       count: 0
     };
 
-    this.username = 'web';
-    this.password = '$10$/9yZ7a480OSyv3U3c5mtVug2qVDnneMU7odrfpoO0dpJuI9kCS7k2';
-    this.basicAuth = 'Basic ' + (this.state.username + ':' + this.state.password);
+    // this.username = 'web';
+    // this.password = '$10$/9yZ7a480OSyv3U3c5mtVug2qVDnneMU7odrfpoO0dpJuI9kCS7k2';
+    // this.basicAuth = 'Basic ' + (this.state.username + ':' + this.state.password);
   }
 
 state = {
@@ -31,41 +32,68 @@ state = {
 //  password = '$10$/9yZ7a480OSyv3U3c5mtVug2qVDnneMU7odrfpoO0dpJuI9kCS7k2';
 //  basicAuth = 'Basic ' + (username + ':' + password);
 
+    // fetch(
+    //   "http://localhost:9191/oauth/token",
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       "content-type": "application/x-www-form-encoded",
+    //       'authorization':"Basic d2ViOndlYg==",
+    //     },
+    //     grant_type:'client_credentials',
+    //     body: "username=jewel&password=password"
+    //   }
+    // )
+
+     //?username=username&password=password&grant_type=password
+    // const res = authService.post('oauth/token',
+    // {
+    //   // method: "POST",
+    // //   headers: { 
+    // //     "Content-Type": "application/x-www-form-urlencoded" //  doesn't support json
+    // //   },
+    // // auth: {
+    // //     username: "web", // This is the client_id
+    // //     password: "web" // This is the client_secret
+    // //   },
+    //   body: data //JSON.stringify(data)
+    // })
+    //  console.log(res)
+
+
+
 
   onSubmit = async (values) => {
 
-    // axios.request({
-    //   url: "/oauth/token",
-    //   method: "post",
-    //   baseURL: "http://localhost:9191/",
-    //   headers: { 'Content-Type': 'application/json;charset=UTF-8', "Access-Control-Allow-Origin": "*", "Accept": "application/json" },
 
-    //   auth: {
-    //     username: "jewel", // This is the client_id
-    //     password: "password" // This is the client_secret
-    //   },
-    //   data: {
-    //     "grant_type": "password",
-    //     "scope": "public"    
-    //   }
-    // }).then(respose => {
-    //   console.log(respose);  
-    // }); 
+   const  headers= { 
+      'accept': 'application/json',
+      'authorization':"Basic d2ViOnNlY3JldA==",
+      'content-type': "application/x-www-form-urlencoded" //  doesn't support json
+    }
 
-    
-    authService.post('oauth/token?grant_type=password&username=jewel&password=password',
+
+
+
+    const data =  {
+      // client_id:'client',
+      // grant_type:'password',
+      username:'jewelcsebu', 
+      password:'@password@' 
+    }
+    authService.post('oauth/token',
+      {
+        grant_type:'password',
+        username:'jewelcsebu', 
+        password:'@password@'
+    },
     {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        clientId: "web",
-        clientSecret: "web",
-        // scope: "user_info"
-      })
-    })
-     
+      headers: headers
+    }
+    
+    )
+    .then(res => console.log(res.data))
+   
   };
 
 

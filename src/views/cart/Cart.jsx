@@ -62,7 +62,7 @@ const CartView = () =>  {
 
 
 
-    const cartData = await getCartProducts(customerId); 
+    const cartData =  getCartProducts(customerId); 
 
     console.log('use effect',cartData)
 
