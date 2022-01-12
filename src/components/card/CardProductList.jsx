@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{ useState } from "react";
 import {cartService} from '../../axios'
 import qs from 'qs';
 
@@ -8,43 +8,41 @@ import { ReactComponent as IconTruckFill } from "bootstrap-icons/icons/truck.svg
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
+
 const CardProductList = (props) => {
 
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
-  const userid = 10;
-  
-  const values ={
-    "customerId":3,
-    "productId":3,
-    "qty":1
-}
 
+  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
 
   const addTocart = (id) =>{
-    console.log(values)
+
+    console.log(id)
+    const values ={
+      "customerId":3,
+      "productId":id
+  }
     
-    cartService.post('add-to-cart',values,{
+    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
+    .then(res => {
 
+      if(res.data.length === 0){
+        alert("Addedd")
+      }else{
+        alert("Already Addedd")
+      }
 
-      
-      headers: {
-        'content-type': 'application/json'
-    }
-
-          })
-    .then(res => console.log(res))
+    })
     .catch(err => console.log(err))
-
-
-
-
   }
 
 
   const product = props.data;
-  console.log(product)
-  console.log(product.productImages[0])
+
+
+  console.log('category url',product)
+  
   return (
     <div className="card">
       <div className="row g-0">

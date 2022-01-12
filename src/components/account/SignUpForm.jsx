@@ -23,7 +23,16 @@ import { ReactComponent as IconPhoneFill } from "bootstrap-icons/icons/phone-fil
 import { ReactComponent as IconShieldLockFill } from "bootstrap-icons/icons/shield-lock-fill.svg";
 
 const SignUpForm = (props) => {
+
+
+
+
   const { handleSubmit, submitting, onSubmit, submitFailed } = props;
+
+
+
+
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

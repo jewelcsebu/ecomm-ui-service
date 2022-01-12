@@ -1,5 +1,6 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Link } from "react-router-dom";
+import {cartService} from '../axios'
 import Search from "./Search";
 import { ReactComponent as IconCart3 } from "bootstrap-icons/icons/cart3.svg";
 import { ReactComponent as IconPersonBadgeFill } from "bootstrap-icons/icons/person-badge-fill.svg";
@@ -13,6 +14,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 const Header = () => {
+
+
+  const [cart,setCart] = useState([]);
+
+  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
+
+  const customerId = 3;
+
+  const getCartProducts = () =>{
+     cartService.get(`get/cart-products/`+customerId,{ headers: {"Authorization" : `Bearer ${token}`} })
+    .then(res => {
+      console.log(res.data)
+      setCart(res.data)
+    })
+    .catch(err => console.log(err))
+  }
+
+  useEffect(()=>{
+    getCartProducts()
+  },[])
+
+
+
   return (
     <React.Fragment>
       <header className="p-3 border-bottom bg-light">
@@ -31,11 +55,13 @@ const Header = () => {
             </div>
             <div className="col-md-4">
               <div className="position-relative d-inline mr-3">
+
                 <Link to="/cart" className="btn btn-primary">
-                  <IconCart3 className="i-va" />
-                  <div className="position-absolute top-0 left-100 translate-middle badge bg-danger rounded-circle">
-                    2
-                  </div>
+                    
+                      <IconCart3 className="i-va" />
+                      <div className="position-absolute top-0 left-100 translate-middle badge bg-danger rounded-circle">
+                        {cart.length}
+                      </div>
                 </Link>
               </div>
               <div className="btn-group">

@@ -1,15 +1,45 @@
-import React from "react";
+import React ,{ useState } from "react";
+import {cartService} from '../../axios'
 import { Link } from "react-router-dom";
 import { ReactComponent as IconStarFill } from "bootstrap-icons/icons/star-fill.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
+
 const CardProductGrid = (props) => {
 
+  
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
 
+  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
+
+  const addTocart = (id) =>{
+
+    console.log(id)
+    const values ={
+      "customerId":3,
+      "productId":id
+  }
+    
+    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
+    .then(res => {
+
+      if(res.data.length === 0){
+        alert("Addedd")
+      }else{
+        alert("Already Addedd")
+      }
+
+    })
+    .catch(err => console.log(err))
+  }
+
+
   const product = props.data;
+
+
+  console.log('category url',product)
   return (
     <div className="card">
       <img src={image+product.productImages[0]} className="card-img-top" alt="..." />
@@ -57,6 +87,7 @@ const CardProductGrid = (props) => {
             type="button"
             className="btn btn-sm btn-primary"
             title="Add to cart"
+            onClick={()=>addTocart(product.id)}
           >
             <FontAwesomeIcon icon={faCartPlus} />
           </button>

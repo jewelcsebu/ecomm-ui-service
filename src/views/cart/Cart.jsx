@@ -8,77 +8,36 @@ import { ReactComponent as IconTruck } from "bootstrap-icons/icons/truck.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import {cartService,productService} from '../../axios'
+import Product from "./Product";
 const CouponApplyForm = lazy(() =>
   import("../../components/others/CouponApplyForm")
 );
 
 const CartView = () =>  {
 
-  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
-
-
   const [cart,setCart] = useState([]);
-  const [product,setProduct] = useState({});
 
+  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
 
   const customerId = 3;
 
-  async function getCartProducts(customerId){
-
-    let data = null;
-
-    await cartService.get(`get/cart-products/`+customerId)
+  const getCartProducts = (customerId) =>{
+     cartService.get(`get/cart-products/`+customerId,{ headers: {"Authorization" : `Bearer ${token}`} })
     .then(res => {
-      // console.log(res.data)
-      // setCart(res.data)
-      data = res.data;
-
-      console.log('data',data)
-      if(data){
-        return data;
-      }else{
-        alert("Cart is empty")
-        return null;
-      }
-      
-    })
-    .catch(err => console.log(err))
-
-  }
-
-  async function getProductByProductId(productId){
-    
-    productService.get(`get/product?productId=`+productId)
-    .then(res => {
-      // console.log(res.data.data)
-      setProduct(res.data.data)
+      console.log(res.data)
+      setCart(res.data)
     })
     .catch(err => console.log(err))
   }
-
 
 
   useEffect(()=>{
 
-
-
-    const cartData =  getCartProducts(customerId); 
-
-    console.log('use effect',cartData)
-
-    // if(cartData){
-
-    //   setCart(cartData)
-
-    //   cartData.map(item =>{
-    //     const single = getProductByProductId(item.productId);
-
-    //     console.log(single)
-    //   })
-    // }
-
+    getCartProducts(customerId); 
 
   },[]);
+
+  console.log('cart data', cart)
 
   const onSubmitApplyCouponCode = () =>{
 
@@ -114,208 +73,8 @@ const CartView = () =>  {
 
 
                     {
-                      cart.map(item => {
-
-                        
-                        // getProductByProductId(item.productId);
-
-                        
-                        return(
-                          <tr>
-                          <td>
-                            <div className="row">
-                              <div className="col-3 d-none d-md-block">
-                                <img
-                                  src=""
-                                  width="80"
-                                  alt="..."
-                                />
-                              </div>
-                              <div className="col">
-                                <Link
-                                  to="/product/detail"
-                                  className="text-decoration-none"
-                                >
-                                  {product.productTitle}
-                                </Link>
-                                <p className="small text-muted">
-                                  Size: XL, Color: blue, Brand: XYZ
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td>
-                            <div className="input-group input-group-sm mw-140">
-                              <button
-                                className="btn btn-primary text-white"
-                                type="button"
-                              >
-                                <FontAwesomeIcon icon={faMinus} />
-                              </button>
-                              <input
-                                type="text"
-                                className="form-control"
-                                defaultValue="1"
-                              />
-                              <button
-                                className="btn btn-primary text-white"
-                                type="button"
-                              >
-                                <FontAwesomeIcon icon={faPlus} />
-                              </button>
-                            </div>
-                          </td>
-                          <td>
-                            <var className="price">$237.00</var>
-                            <small className="d-block text-muted">
-                              $79.00 each
-                            </small>
-                          </td>
-                          <td className="text-right">
-                            <button className="btn btn-sm btn-outline-secondary mr-2">
-                              <IconHeartFill className="i-va" />
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger">
-                              <IconTrash className="i-va" />
-                            </button>
-                          </td>
-                        </tr>
-                        )
-                      })
+                      cart.map((item,index) => <Product data={item} key={index}/>)
                     }
-
-
-
-
-                      {/* <tr>
-                        <td>
-                          <div className="row">
-                            <div className="col-3 d-none d-md-block">
-                              <img
-                                src="../../images/products/tshirt_red_480x400.webp"
-                                width="80"
-                                alt="..."
-                              />
-                            </div>
-                            <div className="col">
-                              <Link
-                                to="/product/detail"
-                                className="text-decoration-none"
-                              >
-                                Another name of some product goes just here
-                              </Link>
-                              <p className="small text-muted">
-                                Size: XL, Color: blue, Brand: XYZ
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="input-group input-group-sm mw-140">
-                            <button
-                              className="btn btn-primary text-white"
-                              type="button"
-                            >
-                              <FontAwesomeIcon icon={faMinus} />
-                            </button>
-                            <input
-                              type="text"
-                              className="form-control"
-                              defaultValue="1"
-                            />
-                            <button
-                              className="btn btn-primary text-white"
-                              type="button"
-                            >
-                              <FontAwesomeIcon icon={faPlus} />
-                            </button>
-                          </div>
-                        </td>
-                        <td>
-                          <var className="price">$237.00</var>
-                          <small className="d-block text-muted">
-                            $79.00 each
-                          </small>
-                        </td>
-                        <td className="text-right">
-                          <button className="btn btn-sm btn-outline-secondary mr-2">
-                            <IconHeartFill className="i-va" />
-                          </button>
-                          <button className="btn btn-sm btn-outline-danger">
-                            <IconTrash className="i-va" />
-                          </button>
-                        </td>
-                      </tr> */}
-
-
-
-
-                      {/* <tr>
-                        <td>
-                          <div className="row">
-                            <div className="col-3 d-none d-md-block">
-                              <img
-                                src="../../images/products/tshirt_grey_480x400.webp"
-                                width="80"
-                                alt="..."
-                              />
-                            </div>
-                            <div className="col">
-                              <Link
-                                to="/product/detail"
-                                className="text-decoration-none"
-                              >
-                                Another name of some product goes just here
-                              </Link>
-                              <p className="small text-muted">
-                                Size: XL, Color: blue, Brand: XYZ
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="input-group input-group-sm mw-140">
-                            <button
-                              className="btn btn-primary text-white"
-                              type="button"
-                            >
-                              <FontAwesomeIcon icon={faMinus} />
-                            </button>
-                            <input
-                              type="text"
-                              className="form-control"
-                              defaultValue="1"
-                            />
-                            <button
-                              className="btn btn-primary text-white"
-                              type="button"
-                            >
-                              <FontAwesomeIcon icon={faPlus} />
-                            </button>
-                          </div>
-                        </td>
-                        <td>
-                          <var className="price">$237.00</var>
-                          <small className="d-block text-muted">
-                            $79.00 each
-                          </small>
-                        </td>
-                        <td className="text-right">
-                          <button className="btn btn-sm btn-outline-secondary mr-2">
-                            <IconHeartFill className="i-va" />
-                          </button>
-                          <button className="btn btn-sm btn-outline-danger">
-                            <IconTrash className="i-va" />
-                          </button>
-                        </td>
-                      </tr> */}
-
-
-
-
-
-
-
                     </tbody>
                   </table>
                 </div>
@@ -401,5 +160,7 @@ const CartView = () =>  {
     );
 
 }
+
+
 
 export default CartView;
