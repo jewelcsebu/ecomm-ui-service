@@ -4,7 +4,9 @@ import { encode } from "base-64";
 import React, { lazy, Component } from "react";
 import { Link } from "react-router-dom";
 import { authService } from "../../axios";
-var axios = require("axios");
+
+var axios = require('axios');
+var qs = require('qs');
 const querystring = require('querystring');
 
 
@@ -66,33 +68,60 @@ state = {
   onSubmit = async (values) => {
 
 
-   const  headers= { 
-      'accept': 'application/json',
-      'authorization':"Basic d2ViOnNlY3JldA==",
-      'content-type': "application/x-www-form-urlencoded" //  doesn't support json
-    }
+
+var data = qs.stringify({
+  'grant_type': 'password',
+  'username': 'jewelcsebu',
+  'password': '@password@' 
+});
+var config = {
+  method: 'post',
+  url: 'http://localhost:9191/oauth/token',
+  headers: { 
+    'Authorization': 'Basic d2ViOnNlY3JldA==', 
+    'Content-Type': 'application/x-www-form-urlencoded', 
+    'Cookie': 'JSESSIONID=F020526824B644534600EDFDB1FCF070'
+  },
+  data : data
+};
+
+axios(config)
+.then(function (response) {
+  console.log(JSON.stringify(response.data));
+})
+.catch(function (error) {
+  console.log(error);
+});
+
+
+
+  //  const  headers= { 
+  //     'accept': 'application/json',
+  //     'authorization':"Basic d2ViOnNlY3JldA==",
+  //     'content-type': "application/x-www-form-urlencoded" //  doesn't support json
+  //   }
 
 
 
 
-    const data =  {
-      // client_id:'client',
-      // grant_type:'password',
-      username:'jewelcsebu', 
-      password:'@password@' 
-    }
-    authService.post('oauth/token',
-      {
-        grant_type:'password',
-        username:'jewelcsebu', 
-        password:'@password@'
-    },
-    {
-      headers: headers
-    }
+  //   const data =  {
+  //     // client_id:'client',
+  //     // grant_type:'password',
+  //     username:'jewelcsebu', 
+  //     password:'@password@' 
+  //   }
+  //   authService.post('oauth/token',
+  //     {
+  //       grant_type:'password',
+  //       username:'jewelcsebu', 
+  //       password:'@password@'
+  //   },
+  //   {
+  //     headers: headers
+  //   }
     
-    )
-    .then(res => console.log(res.data))
+  //   )
+  //   .then(res => console.log(res.data))
    
   };
 

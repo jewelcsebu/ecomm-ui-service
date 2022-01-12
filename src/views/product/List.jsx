@@ -68,29 +68,6 @@ class ProductListView extends Component {
   };
 
   
-  // componentDidMount() {
-
-  //   console.log(this.state.view)
-  //   async function fetchAllProducts() {
-  //     productService.get("get/products", {
-  //         headers: {
-  //             'user-agent': 'Mozilla/4.0 MDN Example',
-  //             'content-type': 'application/json'
-  //         }
-  //     }).then(res => {
-  //         console.log(res.data.data)
-  //         this.state.products = ree
-  //         this.setState({
-  //           products:res.data.data
-  //         })
-  //     }).catch(error => {
-  //       console.log(error)
-  //     })
-  // }
-
-  // fetchAllProducts();
-  // }
-
   componentDidMount(){
         productService.get("get/products", {
             headers: {
@@ -194,7 +171,6 @@ class ProductListView extends Component {
                   })}
                 {this.state.view === "list" &&
                   this.state.products.map((product, idx) => {
-                    console.log(product)
                     return (
                       <div key={idx} className="col-md-12">
                         <CardProductList data={product} />

@@ -3,11 +3,11 @@ import axios from 'axios'
 export const authService = axios.create({
         baseURL: 'http://localhost:9191/',
         
-        headers: { 
-            'accept': 'application/json',
-            'authorization':"Basic d2ViOnNlY3JldA==",
-            'content-type': "application/x-www-form-urlencoded" //  doesn't support json
-          },
+        // headers: { 
+        //     'accept': 'application/json',
+        //     'authorization':"Basic d2ViOnNlY3JldA==",
+        //     'content-type': "application/x-www-form-urlencoded" //  doesn't support json
+        //   },
         // auth: {
         //     username: "web", // This is the client_id
         //     password: "web" // This is the client_secret
