@@ -9,7 +9,7 @@ import { ReactComponent as IconChevronLeft } from "bootstrap-icons/icons/chevron
 import { ReactComponent as IconTruck } from "bootstrap-icons/icons/truck.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import {productService} from '../../axios'
+import {productService,cartService} from '../../axios'
 
 var axios = require('axios');
 const CouponApplyForm = lazy(() =>
@@ -26,41 +26,49 @@ const Product = ({data}) =>{
   
     const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
   
-    // const getProductByProductId = () =>{
+    const getProductByProductId = () =>{
       
-    //   productService.get(`get/product?productId=`+data.productId)
-    //   .then(res => {
-    //     console.log('fetch cart item',res.data.data.productImages)
-    //     console.log('fetch cart item',res.data.data)
-    //     setProduct(res.data.data)
-    //   })
-    //   .catch(err => console.log(err))
-    // }
+      productService.get(`get/product?productId=`+data.productId)
+      .then(res => {
+        console.log(res.data.data)
+        setProduct(res.data.data)
+      })
+      .catch(err => console.log(err))
+    }
   
-    // useEffect(()=>{
+    useEffect(()=>{
   
-    //   getProductByProductId()
+      getProductByProductId()
   
-    // },[])
+    },[])
+
+    const removeItem = (id) =>{
+      
+      cartService.get('remove/cart-item/'+id, { headers: {"Authorization" : `Bearer ${token}`} })
+      .then(res =>{
+        alert("removed")
+        window.location.reload();
+      })
+      .catch(err => console(err))
+    }
+
+    const increaseQuantity = (id) =>{
+      cartService.get('cart/qty-increment/'+id,{ headers: {"Authorization" : `Bearer ${token}`} })
+      .then(res => {
+        console.log(res.data)
+        data.qty = res.data.qty
+        // window.location.reload();
+      })
+      .catch(err => console.log(err))
+    }
+
+    useEffect(()=>{
+
+      
 
 
+    },[data])
 
-var config = {
-  method: 'get',
-  url: 'http://localhost:8200/api/v1/product-service/get/product?productId=3',
-  headers: { }
-};
-
-axios(config)
-.then(function (response) {
-  setProduct(JSON.stringify(response.data))
-  console.log(response.data)
-})
-.catch(function (error) {
-  console.log(error);
-});
-  
-console.log('useSate',product)
   
     return(
       <tr>
@@ -92,14 +100,16 @@ console.log('useSate',product)
           >
             <FontAwesomeIcon icon={faMinus} />
           </button>
-          <input
+          {/* <input
             type="text"
             className="form-control"
-            defaultValue="1"
-          />
+            value={data.qty}
+          /> */}
+          <p style={{padding:"10px"}}>{data.qty}</p>
           <button
             className="btn btn-primary text-white"
             type="button"
+            onClick={()=>increaseQuantity(data.id)}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
@@ -115,7 +125,7 @@ console.log('useSate',product)
         <button className="btn btn-sm btn-outline-secondary mr-2">
           <IconHeartFill className="i-va" />
         </button>
-        <button className="btn btn-sm btn-outline-danger">
+        <button className="btn btn-sm btn-outline-danger" onClick={()=>removeItem(data.id)}>
           <IconTrash className="i-va" />
         </button>
       </td>

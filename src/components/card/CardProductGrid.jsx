@@ -27,6 +27,7 @@ const CardProductGrid = (props) => {
 
       if(res.data.length === 0){
         alert("Addedd")
+        window.location.reload();
       }else{
         alert("Already Addedd")
       }

@@ -17,33 +17,42 @@ const CartView = () =>  {
 
   const [cart,setCart] = useState([]);
 
+
   const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
 
   const customerId = 3;
 
+
+
   const getCartProducts = (customerId) =>{
      cartService.get(`get/cart-products/`+customerId,{ headers: {"Authorization" : `Bearer ${token}`} })
-    .then(res => {
-      console.log(res.data)
-      setCart(res.data)
+    .then(res => { 
+    if(res.data.length>0) {
+     setCart(res.data)
+    }
     })
     .catch(err => console.log(err))
   }
+
 
 
   useEffect(()=>{
 
     getCartProducts(customerId); 
 
+
+
   },[]);
 
-  console.log('cart data', cart)
+  // console.log('cart data', cart)
 
   const onSubmitApplyCouponCode = () =>{
 
 
 
   }
+
+  console.log(cart,'cart page')
 
     return (
       <React.Fragment>
@@ -100,6 +109,10 @@ const CartView = () =>  {
                   <CouponApplyForm onSubmit={onSubmitApplyCouponCode} />
                 </div>
               </div>
+
+
+
+
               <div className="card">
                 <div className="card-body">
                   <dl className="row border-bottom">
@@ -130,6 +143,10 @@ const CartView = () =>  {
                   </p>
                 </div>
               </div>
+
+
+
+              
             </div>
           </div>
         </div>

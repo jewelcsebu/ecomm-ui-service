@@ -29,6 +29,11 @@ const CardProductList = (props) => {
 
       if(res.data.length === 0){
         alert("Addedd")
+        // window.location.reload();
+
+        setTimeout(()=>{
+          window.location.reload(true)
+        },1000)
       }else{
         alert("Already Addedd")
       }

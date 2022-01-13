@@ -1,21 +1,58 @@
-import React, { Component } from "react";
+import React, { useState, useEffect} from "react";
 import { ReactComponent as IconEnvelope } from "bootstrap-icons/icons/envelope.svg";
 import { ReactComponent as IconTruck } from "bootstrap-icons/icons/truck.svg";
 import { ReactComponent as IconReceipt } from "bootstrap-icons/icons/receipt.svg";
 import { ReactComponent as IconCreditCard2Front } from "bootstrap-icons/icons/credit-card-2-front.svg";
 import { ReactComponent as IconCart3 } from "bootstrap-icons/icons/cart3.svg";
+import { shippingService } from "../../axios";
 
-class CheckoutView extends Component {
-  constructor(props) {
-    super();
-    this.state = {};
-  }
+const CheckoutView = () =>{
 
-  render() {
+  const [regions, setRegions] = useState([])
+    const [cities, setCities] = useState([])
+    const [areas, setAreas] = useState([])
+
+
+
+    async function fetchRegion() {
+        shippingService.get(`get/regions`).then(res => {
+            setRegions(res.data)
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
+    async function fetchCities(event) {
+        shippingService.get(`get/cities?regionId=${event.target.value}`).then(res => {
+            setCities(res.data)
+        }).catch(error => {
+          console.log(error)
+        })
+    }
+
+
+    async function fetchAreas(event) {
+        shippingService.get(`get/areas?cityId=${event.target.value}`).then(res => {
+            setAreas(res.data)
+          
+        }).catch(error => {
+          console.log(error)
+        })
+    }
+
+
+
+    useEffect(() => {
+        fetchRegion();
+    }, []);
+
+
+
+
     return (
       <React.Fragment>
         <div className="bg-secondary border-top p-4 text-white mb-3">
-          <h1 className="display-6">Checkout</h1>
+          <h1 className="display-6" style={{textAlign:'center'}}>Checkout</h1>
         </div>
         <div className="container mb-3">
           <div className="row">
@@ -76,24 +113,51 @@ class CheckoutView extends Component {
                       />
                     </div>
                     <div className="col-md-4">
-                      <select className="form-select" required>
-                        <option value>-- Country --</option>
-                        <option>United States</option>
-                      </select>
+                      
+                    {regions.length === 0
+                                ? ""
+                                : <select onChange={(event) => fetchCities(event)} className="form-select" required>
+                                     <option value>-- Region --</option>
+                                    {regions.map((item, index) => {
+                                        return  (
+                                            <>
+                                           
+                                            <option key={index} value={item.id}>{item.region}</option>
+                                        </>
+                                        )
+                                    })}
+                                </select>
+                            }
                     </div>
                     <div className="col-md-4">
-                      <select className="form-select" required>
-                        <option value>-- State --</option>
-                        <option>California</option>
+                   
+
+                    <select onChange={(event) => fetchAreas(event)}  className="form-select" required>
+                                      <option value>-- City --</option>
+                                    {cities.map((item, index) => {
+                                        return  (
+                                            <>
+                                          
+                                            <option key={index} value={item.id}>{item.city}</option>
+                                        </>
+                                        )
+                                    })}
                       </select>
+                            
+
                     </div>
-                    <div className="col-md-4">
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Zip"
-                        required
-                      />
+                    <div className="col-md-4" >
+                    <select className="form-select" required>
+                                     <option value>-- Area --</option>
+                                    {areas.map((item, index) => {
+                                        return (
+                                            <>
+                                           
+                                            <option key={index} value={item.id}>{item.area}</option>
+                                        </>
+                                        )
+                                    })}
+                                </select>
                     </div>
                   </div>
                 </div>
@@ -306,6 +370,6 @@ class CheckoutView extends Component {
       </React.Fragment>
     );
   }
-}
+
 
 export default CheckoutView;
