@@ -18,7 +18,7 @@ const Header = () => {
 
   const [cart,setCart] = useState([]);
 
-  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
+  const token = "94ad2fa5-8a6e-47b8-9a31-5d005cfdc88b";
 
   const customerId = 3;
 

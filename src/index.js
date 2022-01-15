@@ -10,9 +10,9 @@ import { loadState, saveState } from "./localStorage";
 const persistedState = loadState();
 const store = createStore(rootReducer, persistedState);
 
-store.subscribe(() => {
-  saveState(store);
-});
+// store.subscribe(() => {
+//   saveState(store);
+// });
 
 ReactDOM.render(
   <Provider store={store}>

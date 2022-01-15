@@ -1,4 +1,4 @@
-import React, { Component, lazy } from "react";
+import React, { useEffect,useState,useParams, lazy } from "react";
 import { ReactComponent as IconStarFill } from "bootstrap-icons/icons/star-fill.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -24,12 +24,19 @@ const ShippingReturns = lazy(() =>
   import("../../components/others/ShippingReturns")
 );
 const SizeChart = lazy(() => import("../../components/others/SizeChart"));
-class ProductDetailView extends Component {
-  constructor(props) {
-    super();
-    this.state = {};
-  }
-  render() {
+
+
+
+const ProductDetailView = ({match}) =>{
+
+
+
+  const { params: { slug }, } = match;
+
+
+
+
+
     return (
       <div className="container-fluid mt-3">
         <div className="row">
@@ -333,8 +340,7 @@ class ProductDetailView extends Component {
           </div>
         </div>
       </div>
-    );
-  }
+    )
 }
 
 export default ProductDetailView;

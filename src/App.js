@@ -29,6 +29,12 @@ const BlogView = lazy(() => import("./views/blog/Blog"));
 const BlogDetailView = lazy(() => import("./views/blog/Detail"));
 
 function App() {
+
+
+
+
+
+
   return (
     <BrowserRouter>
       <React.Fragment>
@@ -58,7 +64,7 @@ function App() {
               component={NotificationView}
             />
             <Route exact path="/category" component={ProductListView} />
-            <Route exact path="/product/detail" component={ProductDetailView} />
+            <Route path="/product/detail/:slug" component={ProductDetailView} />
             <Route exact path="/star/zone" component={StarZoneView} />
             <Route exact path="/cart" component={CartView} />
             <Route exact path="/checkout" component={CheckoutView} />

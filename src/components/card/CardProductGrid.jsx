@@ -7,40 +7,8 @@ import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 
 const CardProductGrid = (props) => {
-
-  
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
-
-
-  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
-
-  const addTocart = (id) =>{
-
-    console.log(id)
-    const values ={
-      "customerId":3,
-      "productId":id
-  }
-    
-    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
-    .then(res => {
-
-      if(res.data.length === 0){
-        alert("Addedd")
-        window.location.reload();
-      }else{
-        alert("Already Addedd")
-      }
-
-    })
-    .catch(err => console.log(err))
-  }
-
-
   const product = props.data;
-
-
-  console.log('category url',product)
   return (
     <div className="card">
       <img src={image+product.productImages[0]} className="card-img-top" alt="..." />
@@ -54,29 +22,33 @@ const CardProductGrid = (props) => {
           Hot
         </span>
       )}
-      {(product.discountPercentage > 0 || product.productFinalPrice > 0) && (
+      {(product.discountPercentage > 0) && (
         <span
           className={`rounded position-absolute p-2 bg-warning  ml-2 small ${
             product.isNew ? "mt-5" : "mt-2"
           }`}
         >
-          -
-          {product.discountPercentage > 0
-            ? product.discountPercentage + "%"
-            : "$" + product.productFinalPrice}
+          
+            { "-"+product.discountPercentage + "%"}
+           
+          
         </span>
       )}
       <div className="card-body">
         <h6 className="card-subtitle mb-2">
-          <Link to={product.productSlug} className="text-decoration-none">
+          <Link to={'product/detail/'+product.productSlug} className="text-decoration-none">
             {product.productTitle}
           </Link>
         </h6>
+
+
         <div className="my-2">
           <span className="font-weight-bold h5">${product.productFinalPrice}</span>
-          {product.productOriginalPrice > 0 && (
+          {product.discountPercentage > 0 && (
             <del className="small text-muted ml-2">${product.productOriginalPrice}</del>
           )}
+
+
           <span className="ml-2">
             {Array.from({ length: product.star }, (_, key) => (
               <IconStarFill className="text-warning mr-1" key={key} />
@@ -88,7 +60,7 @@ const CardProductGrid = (props) => {
             type="button"
             className="btn btn-sm btn-primary"
             title="Add to cart"
-            onClick={()=>addTocart(product.id)}
+            onClick={()=>props.addTocartHandler(product.id,product)}
           >
             <FontAwesomeIcon icon={faCartPlus} />
           </button>
@@ -96,6 +68,7 @@ const CardProductGrid = (props) => {
             type="button"
             className="btn btn-sm btn-outline-secondary"
             title="Add to wishlist"
+            onClick={()=>props.addToWishListHandler(product.id,product)}
           >
             <FontAwesomeIcon icon={faHeart} />
           </button>

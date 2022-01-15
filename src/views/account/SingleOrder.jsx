@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from "react";
 import { orderService } from "../../axios";
-
+import { loadState } from "../../localStorage";
 import { Link } from "react-router-dom";
 import { ReactComponent as IconStarFill } from "bootstrap-icons/icons/star-fill.svg";
 import { ReactComponent as IconTruckFill } from "bootstrap-icons/icons/truck.svg";
@@ -12,7 +12,7 @@ const SingleOrder = () =>{
     const [products,setProducts] = useState([])
     const [orderDetails,setOrderDetails] = useState({})
 
-    const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
+    const token = loadState().access_token;
     const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
 

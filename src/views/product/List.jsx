@@ -1,7 +1,7 @@
-import React, { lazy, Component } from "react";
+import React, { lazy, useEffect,useState } from "react";
 import { data } from "../../data";
-
-import {productService} from '../../axios'
+import { loadState } from "../../localStorage";
+import {productService,cartService} from '../../axios'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faBars } from "@fortawesome/free-solid-svg-icons";
 const Paging = lazy(() => import("../../components/Paging"));
@@ -22,68 +22,105 @@ const CardProductList = lazy(() =>
 );
 
 
-class ProductListView extends Component {
-  state = {
-    currentProducts: [],
-    currentPage: null,
-    totalPages: null,
-    totalItems: 0,
-    view: "list",
-    products:[],
-  };
-  
+const ProductListView  = () => {
 
-  UNSAFE_componentWillMount() {
-    const totalItems = this.getProducts().length;
 
-    try{
-      this.setState({ totalItems });
-    }catch(e){
-      console.log(e)
-    }
+  const token = loadState().access_token;
+  const [view,setView] = useState("list")
+  const [products,setProducts] = useState([])
+
+
+  // onPageChanged = (page) => {
+  //   let products = this.getProducts();
+  //   const { currentPage, totalPages, pageLimit } = page;
+  //   const offset = (currentPage - 1) * pageLimit;
+  //   const currentProducts = products.slice(offset, offset + pageLimit);
+  //   this.setState({ currentPage, currentProducts, totalPages });
+  // };
+
+  const onChangeView = (view) => {
+      setView("grid")
     
-  }
-
-  onPageChanged = (page) => {
-    let products = this.getProducts();
-    const { currentPage, totalPages, pageLimit } = page;
-    const offset = (currentPage - 1) * pageLimit;
-    const currentProducts = products.slice(offset, offset + pageLimit);
-    this.setState({ currentPage, currentProducts, totalPages });
   };
 
-  onChangeView = (view) => {
-    console.log(this.state.products)
-    this.setState({ view });
-  };
-
-  getProducts = () => {
-    let products = data.products;
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    products = products.concat(products);
-    return products;
-  };
-
-  
-  componentDidMount(){
+  const getProducts = () =>{
         productService.get("get/products", {
             headers: {
                 'user-agent': 'Mozilla/4.0 MDN Example',
                 'content-type': 'application/json'
             }
         }).then(res => { 
-            this.setState({
-              products: res.data.data
-            })
+          console.log(res.data.data)
+            setProducts(res.data.data)
         }).catch(error => {
           console.log(error)
         })
   }
 
-  render() {
+
+
+
+
+  const addTocart = (id,product) =>{
+
+    console.log(id)
+    const values ={
+      "userId":3,
+      "product":product
+    }
+    
+    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
+    .then(res => {
+
+      if(res.data.length === 0){
+        alert("Addedd")
+      }else{
+        alert("Already Addedd")
+      }
+
+    })
+    .catch(err => console.log(err))
+  }
+
+
+  const addToWishList = (id,product) =>{
+    
+    const values ={
+      "userId":3,
+      "product":product
+    }
+
+
+  cartService.post('add-to-wish-list',values,{ headers: {"Authorization" : `Bearer ${token}`} })
+  .then(res => {
+
+    if(res.data.length === 0){
+      alert("Addedd")
+    }else{
+      alert("Already Addedd")
+    }
+
+  })
+  .catch(err => console.log(err))
+
+
+  }
+
+  useEffect(()=>{
+
+    getProducts()
+  },[])
+
+
+
+  useEffect(()=>{
+
+  },[products])
+
+
+  
+
+
     return (
       <React.Fragment>
         <div
@@ -115,7 +152,7 @@ class ProductListView extends Component {
               <div className="row">
                 <div className="col-md-8">
                   <span className="align-middle font-weight-bold">
-                    {this.state.totalItems} results for{" "}
+                    {/* {this.state.totalItems} results for{" "} */}
                     <span className="text-warning">"t-shirts"</span>
                   </span>
                 </div>
@@ -134,9 +171,9 @@ class ProductListView extends Component {
                     <button
                       aria-label="Grid"
                       type="button"
-                      onClick={() => this.onChangeView("grid")}
+                      onClick={() => onChangeView("grid")}
                       className={`btn ${
-                        this.state.view === "grid"
+                        view === "grid"
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
@@ -146,9 +183,9 @@ class ProductListView extends Component {
                     <button
                       aria-label="List"
                       type="button"
-                      onClick={() => this.onChangeView("list")}
+                      onClick={() => onChangeView("list")}
                       className={`btn ${
-                        this.state.view === "list"
+                        view === "list"
                           ? "btn-primary"
                           : "btn-outline-primary"
                       }`}
@@ -161,38 +198,38 @@ class ProductListView extends Component {
               <hr />
               <div className="row g-3"> 
 
-                {this.state.view === "grid" &&
-                  this.state.products.map((product, idx) => {
+                {view === "grid" &&
+                  products.map((product, idx) => {
                     return (
                       <div key={idx} className="col-md-4">
-                        <CardProductGrid data={product} />
+                        <CardProductGrid data={product} addTocartHandler={addTocart} addToWishListHandler={addToWishList}/>
                       </div>
                     );
                   })}
-                {this.state.view === "list" &&
-                  this.state.products.map((product, idx) => {
+                {view === "list" &&
+                  products.map((product, idx) => {
                     return (
                       <div key={idx} className="col-md-12">
-                        <CardProductList data={product} />
+                        <CardProductList data={product} addTocartHandler={addTocart} addToWishListHandler={addToWishList} />
                       </div>
                     );
                   })}
               </div>
               <hr />
-              <Paging
+              {/* <Paging
                 totalRecords={this.state.totalItems}
                 pageLimit={9}
                 pageNeighbours={3}
                 onPageChanged={this.onPageChanged}
                 sizing=""
                 alignment="justify-content-center"
-              />
+              /> */}
             </div>
           </div>
         </div>
       </React.Fragment>
     );
-  }
+  
 }
 
 export default ProductListView;

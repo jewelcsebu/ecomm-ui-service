@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from "react";
 
 import { orderService } from "../../axios";
+import { loadState } from "../../localStorage";
 import { Link } from "react-router-dom";
 
 import OrderList from "./OrderList";
@@ -18,13 +19,10 @@ var axios = require('axios');
 
 const OrdersView  = () => {
 
-//   const  config= { 
-//     'accept': 'application/json',
-//     'Authorization': `Bearer 3f90766b-5e4e-4f1b-ad62-d69e3dd20236` ,
-//     'content-type': "application/json" //  doesn't support json
-//   }
+ console.log(loadState().access_token)
+ console.log(loadState())
 
-   const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
+const token = loadState().access_token;
 
 
  const [orders,setOrders] = useState([]);

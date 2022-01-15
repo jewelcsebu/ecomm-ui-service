@@ -64,7 +64,7 @@ const SignUpForm = (props) => {
         </div>
       </div>
       <Field
-        name="mobileNo"
+        name="mobile"
         type="number"
         label="Mobile no"
         component={renderFormGroupField}

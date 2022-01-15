@@ -10,44 +10,8 @@ import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 
 const CardProductList = (props) => {
-
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
-
-
-  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
-
-  const addTocart = (id) =>{
-
-    console.log(id)
-    const values ={
-      "customerId":3,
-      "productId":id
-  }
-    
-    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
-    .then(res => {
-
-      if(res.data.length === 0){
-        alert("Addedd")
-        // window.location.reload();
-
-        setTimeout(()=>{
-          window.location.reload(true)
-        },1000)
-      }else{
-        alert("Already Addedd")
-      }
-
-    })
-    .catch(err => console.log(err))
-  }
-
-
   const product = props.data;
-
-
-  console.log('category url',product)
-  
   return (
     <div className="card">
       <div className="row g-0">
@@ -96,17 +60,15 @@ const CardProductList = (props) => {
           <div className="card-body">
           <div className="mb-2">
             <span className="font-weight-bold h5">${product.productFinalPrice}</span>
-            {product.productOriginalPrice > 0 && (
+            {product.discountPercentage > 0 && (
               <del className="small text-muted ml-2">
                 ${product.productOriginalPrice}
               </del>
             )}
-            {(product.discountPercentage > 0 || product.productFinalPrice > 0) && (
+            {(product.discountPercentage > 0) && (
               <span className={`rounded p-1 bg-warning ml-2 small`}>
-                -
-                {product.discountPercentage > 0
-                  ? product.discountPercentage + "%"
-                  : "$" + product.productFinalPrice}
+                
+                { "-"+product.discountPercentage + "%"}
               </span>
             )}
           </div>
@@ -121,7 +83,7 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-primary"
               title="Add to cart"
-              onClick={()=>addTocart(product.id)}
+              onClick={()=>props.addTocartHandler(product.id,product)}
             >
               <FontAwesomeIcon icon={faCartPlus} />
             </button>
@@ -129,6 +91,8 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-outline-secondary"
               title="Add to wishlist"
+              onClick={()=>props.addToWishListHandler(product.id,product)}
+
             >
               <FontAwesomeIcon icon={faHeart} />
             </button>
