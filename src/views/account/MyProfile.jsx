@@ -1,4 +1,5 @@
-import React, { lazy, Component } from "react";
+import React, { lazy,useContext, Component } from "react";
+import { globalC } from "../../Context";
 const ProfileForm = lazy(() => import("../../components/account/ProfileForm"));
 const ChangePasswordForm = lazy(() =>
   import("../../components/account/ChangePasswordForm")
@@ -8,18 +9,22 @@ const CardListForm = lazy(() =>
   import("../../components/account/CardListForm")
 );
 
-class MyProfileView extends Component {
-  state = { imagePreview: "", isDeleting: false };
+const MyProfileView = () => {
 
-  onSubmitProfile = async (values) => {
+   const { authLogin,token,authLoginDetail } = useContext(globalC);
+
+
+  // state = { imagePreview: "", isDeleting: false };
+
+ const onSubmitProfile = async (values) => {
     alert(JSON.stringify(values));
   };
 
-  onSubmitChangePassword = async (values) => {
+  const onSubmitChangePassword = async (values) => {
     alert(JSON.stringify(values));
   };
 
-  onImageChange = async (obj) => {
+ const onImageChange = async (obj) => {
     if (obj) {
       const val = await this.getBase64(obj);
       this.setState({ imagePreview: val });
@@ -28,7 +33,7 @@ class MyProfileView extends Component {
     }
   };
 
-  getBase64 = (file) => {
+ const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
@@ -36,28 +41,27 @@ class MyProfileView extends Component {
       reader.onerror = (error) => reject(error);
     });
   };
-  render() {
+  
     return (
       <div className="container-fluid my-3">
         <div className="row">
           <div className="col-md-4">
             <ProfileForm
-              onSubmit={this.onSubmitProfile}
-              onImageChange={this.onImageChange}
-              imagePreview={this.state.imagePreview}
+              onSubmit={onSubmitProfile}
+              onImageChange={onImageChange}
             />
           </div>
           <div className="col-md-8">
-            <ChangePasswordForm onSubmit={this.onSubmitChangePassword} />
+            {/* <ChangePasswordForm onSubmit={onSubmitChangePassword} /> */}
             <br></br>
             <SettingForm />
             <br></br>
-            <CardListForm />
+            {/* <CardListForm /> */}
           </div>
         </div>
       </div>
     );
-  }
+  
 }
 
 export default MyProfileView;

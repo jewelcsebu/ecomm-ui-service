@@ -10,6 +10,8 @@ import {
 
 const OrderList = ({order}) =>{
 
+  
+
     return(
 
         <div className="col-md-6">
@@ -37,7 +39,7 @@ const OrderList = ({order}) =>{
                     </span>
                     <span className="border bg-white rounded-right mr-2"> 
                     
-                    <Link to="/account/order/details"  className="text-center m-1">Details</Link>
+                    <Link to={'order/details/'+order.id}  className="text-center m-1">Details</Link>
                     
                     </span>
                    

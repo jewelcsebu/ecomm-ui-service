@@ -8,7 +8,7 @@ export const loadState = () => {
       }
 
       const data = JSON.parse(serializedState);
-      console.log('local',data)
+      // console.log('local',data)
 
       // var config = {
       //   method: 'get',

@@ -1,24 +1,38 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect,useState,useContext } from "react";
 import { orderService } from "../../axios";
 import { loadState } from "../../localStorage";
+import { globalC } from "../../Context";
 import { Link } from "react-router-dom";
 import { ReactComponent as IconStarFill } from "bootstrap-icons/icons/star-fill.svg";
 import { ReactComponent as IconTruckFill } from "bootstrap-icons/icons/truck.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { ReactComponent as IconCart3 } from "bootstrap-icons/icons/cart3.svg";
-const SingleOrder = () =>{
+
+
+const SingleOrder = ({match}) =>{
+
+  
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+  const [isLoading,setIsLoading] = useState(true)
 
     const [products,setProducts] = useState([])
     const [orderDetails,setOrderDetails] = useState({})
 
-    const token = loadState().access_token;
+    const { params: { orderId }, } = match;
+
+
+
+    // const token = authLogin.access_token;
+
+    console.log('order idddddddddd',orderId)
+
     const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
 
-    const getproduct = (orderId) =>{
+    const getproduct = () =>{
 
-        orderService.get('get/order-details/Mt0T6JsQU6',{ headers: {"authorization" : `Bearer ${token}`} })
+        orderService.get('get/order-details/'+orderId,{ headers: {"authorization" : `Bearer ${token}`} })
         .then(res => {
             console.log('products',res.data.products)
             console.log('order',res.data)
@@ -31,7 +45,7 @@ const SingleOrder = () =>{
 
     useEffect(()=>{
 
-        getproduct("orderId");
+        getproduct();
 
 
     },[])
@@ -108,11 +122,13 @@ const SingleOrder = () =>{
 
 
 const Product = ({product}) =>{
+
+  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
     return(
         <div className="row g-3" style={{borderBottom:'1px solid black'}}>
-            <div className="col-md-3 text-center">
-                        {/* <img src={image+product.productImages[0]} className="img-fluid" alt="..." /> */}
-            </div>
+            {/* <div className="col-md-3 text-center">
+                        <img src={image+product.productImages[0]} className="img-fluid" alt="..." />
+            </div> */}
             <div className="col-md-6">
                 <div className="card-body">
                         <h6 className="card-subtitle mr-2 d-inline">

@@ -86,7 +86,7 @@ class HomeView extends Component {
               <CardDealsOfTheDay
                 endDate={Date.now() + 1000 * 60 * 60 * 14}
                 title="Deals of the Day"
-                to="/"
+                to="/view/products"
               >
                 <Carousel id="elect-product-category1">
                   {carouselContent}

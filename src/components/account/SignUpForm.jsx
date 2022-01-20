@@ -65,15 +65,13 @@ const SignUpForm = (props) => {
       </div>
       <Field
         name="mobile"
-        type="number"
+        type="text"
         label="Mobile no"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
+        placeholder="Mobile no / username"
         icon={IconPhoneFill}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        validate={[required ]}
         required={true}
-        max="999999999999999"
-        min="9999"
         className="mb-3"
       />
       <Field

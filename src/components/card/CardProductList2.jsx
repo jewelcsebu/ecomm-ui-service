@@ -1,5 +1,6 @@
-import React from "react";
+import React,{useContext} from "react";
 import { Link } from "react-router-dom";
+import { globalC } from "../../Context";
 import { ReactComponent as IconHeartFill } from "bootstrap-icons/icons/heart-fill.svg";
 import { ReactComponent as IconTrash } from "bootstrap-icons/icons/trash.svg";
 import { ReactComponent as IconChevronRight } from "bootstrap-icons/icons/chevron-right.svg";
@@ -12,8 +13,13 @@ import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const CardProductList2 = (props) => {
 
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+
 
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
+
+
+
 
   const product = props.data;
   console.log('wish list single',product)
@@ -70,6 +76,7 @@ const CardProductList2 = (props) => {
                 type="button"
                 className="btn btn-sm btn-primary"
                 title="Add to cart"
+                onClick={()=>props.addTocartHandler(authLogin.user_name,product)}
               >
                 <FontAwesomeIcon icon={faCartPlus} />
               </button>

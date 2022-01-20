@@ -18,7 +18,6 @@ const CouponApplyForm = lazy(() =>
 
 const Product = ({ data, handleRemove, handleIncreaseQuantity, handleDecrementQuantity }) => {
 
-  const token = loadState().access_token;
 
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
@@ -46,10 +45,6 @@ const Product = ({ data, handleRemove, handleIncreaseQuantity, handleDecrementQu
       </td>
       <td>
         <div className="input-group input-group-sm mw-140">
-
-
-
-
           <button
             className="btn btn-primary text-white"
             type="button"
@@ -58,14 +53,7 @@ const Product = ({ data, handleRemove, handleIncreaseQuantity, handleDecrementQu
             <FontAwesomeIcon icon={faMinus} />
           </button>
 
-
-
-
-
-
-
           <p style={{ padding: "10px" }}>{data.product.quantity}</p>
-
 
           <button
             className="btn btn-primary text-white"
@@ -76,6 +64,8 @@ const Product = ({ data, handleRemove, handleIncreaseQuantity, handleDecrementQu
           </button>
         </div>
       </td>
+
+
       <td>
         <var className="price"> {data.product.productFinalPrice} each</var>
         {data.product.discountPercentage > 0 && (
@@ -84,14 +74,22 @@ const Product = ({ data, handleRemove, handleIncreaseQuantity, handleDecrementQu
           </del>
         )}
       </td>
+
+      <td>
+        <var className="Sub-Total"> {data.product.productFinalPrice*data.product.quantity}</var>
+      </td>
+
+
       <td className="text-right">
-        <button className="btn btn-sm btn-outline-secondary mr-2">
+        {/* <button className="btn btn-sm btn-outline-secondary mr-2">
           <IconHeartFill className="i-va" />
-        </button>
+        </button> */}
         <button className="btn btn-sm btn-outline-danger" onClick={() => handleRemove(data.id)}>
           <IconTrash className="i-va" />
         </button>
       </td>
+
+
     </tr>
   )
 }

@@ -1,6 +1,10 @@
-import React, { lazy, useEffect,useState } from "react";
+import React, { lazy, useEffect,useState,useContext } from "react";
+
+import swal from 'sweetalert';
+
 import { data } from "../../data";
 import { loadState } from "../../localStorage";
+import { globalC } from "../../Context";
 import {productService,cartService} from '../../axios'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faBars } from "@fortawesome/free-solid-svg-icons";
@@ -24,10 +28,15 @@ const CardProductList = lazy(() =>
 
 const ProductListView  = () => {
 
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
 
-  const token = loadState().access_token;
+
   const [view,setView] = useState("list")
   const [products,setProducts] = useState([])
+
+  const username = authLogin?.user_name;
+
+  console.log(username)
 
 
   // onPageChanged = (page) => {
@@ -61,11 +70,22 @@ const ProductListView  = () => {
 
 
 
-  const addTocart = (id,product) =>{
+  const addTocart = (username,product) =>{
 
-    console.log(id)
+
+    // if(username == null){
+    //   swal({
+    //     title: "yeaHOOO!",
+    //     text: "Already to the Cart",
+    //     icon: "warning",
+    //     timer: 2000,
+    //     button: false
+    //   })
+    //   return 0;
+    // }
+
     const values ={
-      "userId":3,
+      "username":username,
       "product":product
     }
     
@@ -73,9 +93,21 @@ const ProductListView  = () => {
     .then(res => {
 
       if(res.data.length === 0){
-        alert("Addedd")
+        swal({
+          title: "Done!",
+          text: "Added To The Cart",
+          icon: "success",
+          timer: 2000,
+          button: false
+        })
       }else{
-        alert("Already Addedd")
+        swal({
+          title: "yeaHOOO!",
+          text: "Already to the Cart",
+          icon: "warning",
+          timer: 2000,
+          button: false
+        })
       }
 
     })
@@ -83,10 +115,10 @@ const ProductListView  = () => {
   }
 
 
-  const addToWishList = (id,product) =>{
+  const addToWishList = (username,product) =>{
     
     const values ={
-      "userId":3,
+      "username":username,
       "product":product
     }
 
@@ -95,9 +127,21 @@ const ProductListView  = () => {
   .then(res => {
 
     if(res.data.length === 0){
-      alert("Addedd")
+      swal({
+        title: "Done!",
+        text: "Added To The WishList",
+        icon: "success",
+        timer: 2000,
+        button: false
+      })
     }else{
-      alert("Already Addedd")
+      swal({
+        title: "yeaHOOO!",
+        text: "Already to the wishList",
+        icon: "warning",
+        timer: 2000,
+        button: false
+      })
     }
 
   })
@@ -118,8 +162,7 @@ const ProductListView  = () => {
   },[products])
 
 
-  
-
+ 
 
     return (
       <React.Fragment>
@@ -131,29 +174,29 @@ const ProductListView  = () => {
         >
           <div className="container text-center">
             <span className="display-5 px-3 bg-white rounded shadow">
-              T-Shirts
+              Products
             </span>
           </div>
         </div>
         <Breadcrumb />
         <div className="container-fluid mb-3">
           <div className="row">
-            <div className="col-md-3">
-              <FilterCategory />
+            <div className="col-md-1">
+              {/* <FilterCategory />
               <FilterPrice />
               <FilterSize />
               <FilterStar />
               <FilterColor />
               <FilterClear />
               <FilterTag />
-              <CardServices />
+              <CardServices /> */}
             </div>
-            <div className="col-md-9">
+            <div className="col-md-10">
               <div className="row">
                 <div className="col-md-8">
                   <span className="align-middle font-weight-bold">
-                    {/* {this.state.totalItems} results for{" "} */}
-                    <span className="text-warning">"t-shirts"</span>
+                    {products?.length} results found{" "}
+                    {/* <span className="text-warning">"items found"</span> */}
                   </span>
                 </div>
                 <div className="col-md-4">
@@ -225,6 +268,7 @@ const ProductListView  = () => {
                 alignment="justify-content-center"
               /> */}
             </div>
+            <div className="col-md-1"></div>
           </div>
         </div>
       </React.Fragment>

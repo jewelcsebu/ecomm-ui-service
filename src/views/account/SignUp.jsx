@@ -12,7 +12,7 @@ const SignUpView = () => {
 
   const onSubmit = async (values) => {
 
-    console.log(values)
+    // alert(values)
 
     var config = {
       method: 'post',

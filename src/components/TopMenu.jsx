@@ -22,6 +22,8 @@ const TopMenu = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav">
+
+{/*               
               <li className="nav-item dropdown">
                 <button
                   className="btn nav-link dropdown-toggle font-weight-bold"
@@ -31,24 +33,33 @@ const TopMenu = () => {
                 >
                   All Pages
                 </button>
+
                 <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                   
                  
                  
                   <li>
                     <Link className="dropdown-item" to="/contact-us">
-                      Category 1
+                      Contact US
                     </Link>
                   </li>
                  
                 
                 </ul>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/category">
-                  Fashion
-                </Link>
-              </li>
+              </li> */}
+
+                <li>
+                    <Link className="dropdown-item" to="/view/products">
+                      Products 
+                    </Link>
+                  </li>
+
+
+              <li>
+                    <Link className="dropdown-item" to="/contact-us">
+                      Contact US
+                    </Link>
+                  </li>
             </ul>
           </div>
         </div>

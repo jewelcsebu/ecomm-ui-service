@@ -1,4 +1,5 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
+import { globalC } from "../../Context";
 
 import { orderService } from "../../axios";
 import { loadState } from "../../localStorage";
@@ -15,58 +16,64 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
-var axios = require('axios');
 
-const OrdersView  = () => {
+const OrdersView = () => {
 
- console.log(loadState().access_token)
- console.log(loadState())
-
-const token = loadState().access_token;
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+  const [isLoading,setIsLoading] = useState(true)
 
 
- const [orders,setOrders] = useState([]);
+  // console.log('mhdsajhsadhsa1',token)
+  // console.log('mhdsajhsadhsa11',authLogin)
+  // console.log('mhdsajhsadhsa222',authLoginDetail)
 
-const getOrdersByCustomerId = () =>{
 
-  orderService.get('get/orders/customerId/1',{ headers: {"Authorization" : `Bearer ${token}`} })
-  .then(res =>{
-    console.log(res.data.data)
-   setOrders(res.data.data)
+  const [orders, setOrders] = useState([]);
+
+ 
+
+  const getOrdersByCustomerId = () => {
+
+    orderService.get('get/orders/customerId/'+authLogin?.user_name, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.data)
+        setOrders(res.data.data)
+        setIsLoading(false)
+      })
+
+  }
+
+
+  useEffect(() => {
+
+    getOrdersByCustomerId();
+
+  }, [])
+
+  const orderList = orders.map(order => {
+    return (
+      <OrderList order={order} key={order.id} />
+    )
   })
 
-}
 
 
-useEffect(()=>{
-
- getOrdersByCustomerId();
-
-},[])
-
-const orderList = orders.map(order => {
-  return(
-    <OrderList order = {order} key={order.id}/>
-  )
-})
-
-
-
-    return (
-      <div className="container mb-3">
-        <h4 className="my-3">Orders</h4>
-        <div className="row g-3">
-              { orders.length>0 ? orderList : <NOORDER />}
-        </div>
+  return (
+    <div className="container mb-3">
+      <h4 className="my-3 text-center">Orders</h4>
+      <div className="row g-3">
+        {isLoading && <p className="text-center">Loading.....</p>}
+        {orders.length > 0 ? orderList : <NOORDER />}
       </div>
-    );
+    </div>
+  );
 }
 
 
-const NOORDER = () =>{
+const NOORDER = () => {
   return (
     <div className="alert alert-warning">
-        <p>No Orders Found!</p>
+      <p>No Orders Found!</p>
     </div>
   )
 }

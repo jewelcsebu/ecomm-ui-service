@@ -16,24 +16,24 @@ import { faUser } from "@fortawesome/free-solid-svg-icons";
 const Header = () => {
 
 
-  const [cart,setCart] = useState([]);
+  // const [cart,setCart] = useState([]);
 
-  const token = "94ad2fa5-8a6e-47b8-9a31-5d005cfdc88b";
+  // const token = "94ad2fa5-8a6e-47b8-9a31-5d005cfdc88b";
 
-  const customerId = 3;
+  // const customerId = 3;
 
-  const getCartProducts = () =>{
-     cartService.get(`get/cart-products/`+customerId,{ headers: {"Authorization" : `Bearer ${token}`} })
-    .then(res => {
-      console.log(res.data)
-      setCart(res.data)
-    })
-    .catch(err => console.log(err))
-  }
+  // const getCartProducts = () =>{
+  //    cartService.get(`get/cart-products/`+customerId,{ headers: {"Authorization" : `Bearer ${token}`} })
+  //   .then(res => {
+  //     console.log(res.data)
+  //     setCart(res.data)
+  //   })
+  //   .catch(err => console.log(err))
+  // }
 
-  useEffect(()=>{
-    getCartProducts()
-  },[])
+  // useEffect(()=>{
+  //   getCartProducts()
+  // },[])
 
 
 
@@ -44,10 +44,10 @@ const Header = () => {
           <div className="row g-3">
             <div className="col-md-3 text-center">
               <Link to="/">
-                <img
+                {/* <img
                   alt="logo"
                   src="../../images/logo.webp"
-                />
+                /> */}
               </Link>
             </div>
             <div className="col-md-5">
@@ -60,7 +60,7 @@ const Header = () => {
                     
                       <IconCart3 className="i-va" />
                       <div className="position-absolute top-0 left-100 translate-middle badge bg-danger rounded-circle">
-                        {cart.length}
+                       0
                       </div>
                 </Link>
               </div>
@@ -80,11 +80,11 @@ const Header = () => {
                       <IconPersonBadgeFill /> My Profile
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link className="dropdown-item" to="/star/zone">
                       <IconStarFill className="text-warning" /> Star Zone
                     </Link>
-                  </li>
+                  </li> */}
                   <li>
                     <Link className="dropdown-item" to="/account/orders">
                       <IconListCheck className="text-primary" /> Orders
@@ -112,7 +112,10 @@ const Header = () => {
                     <hr className="dropdown-divider" />
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="/">
+                    <Link className="dropdown-item" to="/" onClick={()=>{
+                     
+                     localStorage.removeItem("state")
+                    }}>
                       <IconDoorClosedFill className="text-danger" /> Logout
                     </Link>
                   </li>

@@ -1,5 +1,6 @@
-import React ,{ useState } from "react";
+import React ,{ useState,useContext } from "react";
 import {cartService} from '../../axios'
+import { globalC } from "../../Context";
 import qs from 'qs';
 
 import { Link } from "react-router-dom";
@@ -10,6 +11,11 @@ import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 
 const CardProductList = (props) => {
+
+
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+
+  
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
   const product = props.data;
   return (
@@ -21,7 +27,7 @@ const CardProductList = (props) => {
         <div className="col-md-6">
           <div className="card-body">
             <h6 className="card-subtitle mr-2 d-inline">
-              <Link to={product.productSlug} className="text-decoration-none">
+            <Link to={'product/detail/'+product.productSlug}  className="text-decoration-none">
                 {product.productTitle}
               </Link>
             </h6>
@@ -83,7 +89,7 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-primary"
               title="Add to cart"
-              onClick={()=>props.addTocartHandler(product.id,product)}
+              onClick={()=>props.addTocartHandler(authLogin.user_name,product)}
             >
               <FontAwesomeIcon icon={faCartPlus} />
             </button>
@@ -91,7 +97,7 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-outline-secondary"
               title="Add to wishlist"
-              onClick={()=>props.addToWishListHandler(product.id,product)}
+              onClick={()=>props.addToWishListHandler(authLogin.user_name,product)}
 
             >
               <FontAwesomeIcon icon={faHeart} />

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, {useContext, useState, useEffect, lazy } from "react";
 import { Link } from "react-router-dom";
+import { globalC } from "../../Context";
 import { loadState } from "../../localStorage";
 import { ReactComponent as IconHeartFill } from "bootstrap-icons/icons/heart-fill.svg";
 import { ReactComponent as IconTrash } from "bootstrap-icons/icons/trash.svg";
@@ -15,11 +16,15 @@ const CouponApplyForm = lazy(() =>
 );
 
 const CartView = () => {
+
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+
+
   const [cart, setCart] = useState([]);
-  const [change, setChange] = useState(false)
-  const [total, setTotal] = useState(0)
-  const token = loadState().access_token;
-  const customerId = 3;
+  const [total,setTotal] = useState(null)
+  const [isLoading,setIsLoading] = useState(true)
+
+  const username = authLogin.user_name;
 
   const getSummary = (cart) => {
 
@@ -27,23 +32,24 @@ const CartView = () => {
     cart.map(item => {
       total += item.product.quantity * item.product.productFinalPrice
     })
-    console.log(total)
     return total;
   }
 
 
-  const getCartProducts = (customerId) => {
-    cartService.get(`get/cart-products/` + customerId, { headers: { "Authorization": `Bearer ${token}` } })
+  const getCartProducts = () => {
+    cartService.get(`get/cart-products/`+username, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
+        console.log('cart',res.data)
         setCart(res.data)
         setTotal(getSummary(res.data))
+        setIsLoading(false)
       })
       .catch(err => console.log(err))
   }
   const removeItem = (id) => {
     cartService.get('remove/cart-item/' + id, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        getCartProducts(customerId)
+        getCartProducts(username)
         console.log(res.data)
       })
       .catch(err => console(err))
@@ -52,7 +58,7 @@ const CartView = () => {
   const increaseQuantity = (id) => {
     cartService.get('cart/qty-increment/' + id, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        getCartProducts(customerId)
+        getCartProducts(username)
         console.log('incrse', res.data)
       })
       .catch(err => console.log(err))
@@ -61,7 +67,7 @@ const CartView = () => {
   const deCreaseQuantity = (id) => {
     cartService.get('cart/qty-decrement/' + id, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
-        getCartProducts(customerId)
+        getCartProducts(username)
         console.log('decrse', res.data)
       })
       .catch(err => console.log(err))
@@ -70,7 +76,7 @@ const CartView = () => {
 
   useEffect(() => {
 
-    getCartProducts(customerId);
+    getCartProducts(username);
 
   }, []);
 
@@ -80,6 +86,9 @@ const CartView = () => {
   const onSubmitApplyCouponCode = () => {
   }
   console.log(cart, 'cart page')
+
+ 
+
   return (
     <React.Fragment>
       <div className="bg-secondary border-top p-4 text-white mb-3">
@@ -100,11 +109,25 @@ const CartView = () => {
                       <th scope="col" width={150}>
                         Price
                       </th>
+                      <th scope="col" width={150}>
+                        Sub-Total
+                      </th>
                       <th scope="col" className="text-right" width={130}></th>
                     </tr>
                   </thead>
                   <tbody>
 
+                    {isLoading && <tr>
+                                      <td>  
+                                      <div className="row">
+                                      <div className="col-12 d-none d-md-block">
+                                        
+                                        Loading....  
+                                        
+                                        </div>
+                                        </div>
+                                        </td>
+                                  </tr>}
 
 
                     {
@@ -156,17 +179,17 @@ const CartView = () => {
                   </dd>
 
                   <dt className="col-6 text-success">Discount:</dt>
-                  <dd className="col-6 text-success text-right">-$58</dd>
+                  <dd className="col-6 text-success text-right">TK 0</dd>
                   <dt className="col-6 text-success">
                     Coupon:{" "}
                     <span className="small text-muted">EXAMPLECODE</span>{" "}
                   </dt>
-                  <dd className="col-6 text-success text-right">-$68</dd>
+                  <dd className="col-6 text-success text-right">Tk 0</dd>
                 </dl>
                 <dl className="row">
                   <dt className="col-6">Total:</dt>
                   <dd className="col-6 text-right  h5">
-                    <strong>$1,350</strong>
+                    <strong>  {(total) && 'TK ' + total}</strong>
                   </dd>
                 </dl>
                 <hr />
