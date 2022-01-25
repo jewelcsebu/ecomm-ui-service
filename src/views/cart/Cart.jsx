@@ -37,6 +37,7 @@ const CartView = () => {
 
 
   const getCartProducts = () => {
+    console.log('cart username',username)
     cartService.get(`get/cart-products/`+username, { headers: { "Authorization": `Bearer ${token}` } })
       .then(res => {
         console.log('cart',res.data)

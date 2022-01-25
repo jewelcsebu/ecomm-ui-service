@@ -16,7 +16,7 @@ const SignUpView = () => {
 
     var config = {
       method: 'post',
-      url: 'http://localhost:9191/api/v1/auth-service/customer/register',
+      url: 'http://localhost:9191/api/v1/auth-service/customer/registration',
       headers: {
         'Authorization': 'Basic d2ViOnNlY3JldA==',
         'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ const SignUpView = () => {
         console.log(JSON.stringify(response.data));
       })
       .catch(function (errors) {
-        console.log(errors.response.data);
+        console.log(errors.response);
 
         setSuccess("")
         setError(errors.response.data.message)

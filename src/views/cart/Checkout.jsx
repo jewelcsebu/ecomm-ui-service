@@ -29,6 +29,7 @@ const CheckoutView = () => {
 
 
   const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(null)
   const [isCOD, setIsCOD] = useState(true)
 
@@ -139,7 +140,11 @@ const CheckoutView = () => {
   const placeOrder = () => {
 
 
-
+    var p = [];
+    
+    cart.map(item => {
+      p.push(item.product)
+    })
 
     var data = JSON.stringify({
       "shippingAddress": {
@@ -152,12 +157,11 @@ const CheckoutView = () => {
       },
       "shippingCharge": 80,
       "priority": "HIGH",
-      "products": cart
+      "products": p
     });
-    console.log(data)
     var config = {
       method: 'post',
-      url: 'localhost:8300/api/v1/order-service/create-order',
+      url: 'http://localhost:8300/api/v1/order-service/create-order',
       headers: {
         'Authorization': 'Bearer ' + token,
         'Content-Type': 'application/json'

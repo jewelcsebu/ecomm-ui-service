@@ -7,12 +7,24 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "./App.min.css";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+
+const Admin = lazy(() => import("./views/admin/Admin"));
+
+
+
+
+
+
+
+
+
+
 const HomeView = lazy(() => import("./views/Home"));
 const SignInView = lazy(() => import("./views/account/SignIn"));
 const SignUpView = lazy(() => import("./views/account/SignUp"));
 const ForgotPasswordView = lazy(() => import("./views/account/ForgotPassword"));
 const OrdersView = lazy(() => import("./views/account/Orders"));
-const SingleOrder = lazy(()=>import("./views/account/SingleOrder"))
+const SingleOrder = lazy(() => import("./views/account/SingleOrder"))
 const WishlistView = lazy(() => import("./views/account/Wishlist"));
 const NotificationView = lazy(() => import("./views/account/Notification"));
 const MyProfileView = lazy(() => import("./views/account/MyProfile"));
@@ -34,6 +46,13 @@ function App() {
 
   return (
     <BrowserRouter>
+
+      <React.Fragment>
+      <Switch>
+            <Route exact path="/admin" component={Admin} />
+      </Switch>
+
+      </React.Fragment>
       <React.Fragment>
         <Header />
         <TopMenu />
