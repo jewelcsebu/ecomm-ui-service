@@ -1,6 +1,8 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
+import { globalC } from "../../Context";
 
 import { orderService } from "../../axios";
+import { loadState } from "../../localStorage";
 import { Link } from "react-router-dom";
 
 import OrderList from "./OrderList";
@@ -14,61 +16,64 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
-var axios = require('axios');
 
-const OrdersView  = () => {
+const OrdersView = () => {
 
-//   const  config= { 
-//     'accept': 'application/json',
-//     'Authorization': `Bearer 3f90766b-5e4e-4f1b-ad62-d69e3dd20236` ,
-//     'content-type': "application/json" //  doesn't support json
-//   }
-
-   const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+  const [isLoading,setIsLoading] = useState(true)
 
 
- const [orders,setOrders] = useState([]);
+  // console.log('mhdsajhsadhsa1',token)
+  // console.log('mhdsajhsadhsa11',authLogin)
+  // console.log('mhdsajhsadhsa222',authLoginDetail)
 
-const getOrdersByCustomerId = () =>{
 
-  orderService.get('get/orders/customerId/1',{ headers: {"Authorization" : `Bearer ${token}`} })
-  .then(res =>{
-    console.log(res.data.data)
-   setOrders(res.data.data)
+  const [orders, setOrders] = useState([]);
+
+ 
+
+  const getOrdersByCustomerId = () => {
+
+    orderService.get('get/orders/customerId/'+authLogin?.user_name, { headers: { "Authorization": `Bearer ${token}` } })
+      .then(res => {
+        console.log(res.data.data)
+        setOrders(res.data.data)
+        setIsLoading(false)
+      })
+
+  }
+
+
+  useEffect(() => {
+
+    getOrdersByCustomerId();
+
+  }, [])
+
+  const orderList = orders.map(order => {
+    return (
+      <OrderList order={order} key={order.id} />
+    )
   })
 
-}
 
 
-useEffect(()=>{
-
- getOrdersByCustomerId();
-
-},[])
-
-const orderList = orders.map(order => {
-  return(
-    <OrderList order = {order} key={order.id}/>
-  )
-})
-
-
-
-    return (
-      <div className="container mb-3">
-        <h4 className="my-3">Orders</h4>
-        <div className="row g-3">
-              { orders.length>0 ? orderList : <NOORDER />}
-        </div>
+  return (
+    <div className="container mb-3">
+      <h4 className="my-3 text-center">Orders</h4>
+      <div className="row g-3">
+        {isLoading && <p className="text-center">Loading.....</p>}
+        {orders.length > 0 ? orderList : <NOORDER />}
       </div>
-    );
+    </div>
+  );
 }
 
 
-const NOORDER = () =>{
+const NOORDER = () => {
   return (
     <div className="alert alert-warning">
-        <p>No Orders Found!</p>
+      <p>No Orders Found!</p>
     </div>
   )
 }

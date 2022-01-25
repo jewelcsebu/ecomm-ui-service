@@ -28,17 +28,17 @@ const SignInForm = (props) => {
       className={`needs-validation ${submitFailed ? "was-validated" : ""}`}
       noValidate
     >
-      {/* <Field
+      <Field
         name="mobileNo"
-        type="number"
-        label="Mobile no"
+        type="text"
+        label="Mobile no / Username"
         component={renderFormGroupField}
-        placeholder="Mobile no without country code"
+        placeholder="username/mobile"
         icon={IconPhoneFill}
-        validate={[required, maxLengthMobileNo, minLengthMobileNo, digit]}
+        validate={[required, maxLength20, minLength8]}
         required={true}
-        max="999999999999999"
-        min="9999"
+        maxLength="20"
+        minLength="3"
         className="mb-3"
       />
       <Field
@@ -53,7 +53,7 @@ const SignInForm = (props) => {
         maxLength="20"
         minLength="3"
         className="mb-3"
-      /> */}
+      />
       <button
         type="submit"
         className="btn btn-primary btn-block mb-3"

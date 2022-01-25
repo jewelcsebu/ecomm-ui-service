@@ -169,16 +169,14 @@ const Footer = () => {
               <hr />
               <address>
                 <strong>Twitter, Inc.</strong>
-                <br />
-                1355 Market St, Suite 900
-                <br />
-                San Francisco, CA 94103
+                
+                 Barisal 8100
                 <br />
                 <abbr title="Phone">P:</abbr> (123) 456-7890
               </address>
               <div className="h6">Customer Care</div>
               <hr />
-              <IconTelephone /> +1800 100 1000
+              <IconTelephone /> +01930792666
               <br />
               <IconEnvelope /> info@email.com
             </div>
@@ -188,7 +186,7 @@ const Footer = () => {
           <div className="row">
           
             <div className="col-md-6 py-2">
-              © 2009-{new Date().getFullYear()} React-E-Commerce.com
+              © {new Date().getFullYear()} ECOM
             </div>
             <div className="col-md-6 py-2 bg-white">
               <img

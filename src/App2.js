@@ -1,22 +1,14 @@
-import React, { Suspense, lazy } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import React, { Suspense, lazy,useContext } from "react";
+import { BrowserRouter,Redirect, Route, Switch,useLocation } from "react-router-dom";
+import { globalC } from "./Context";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.js";
 import TopMenu from "./components/TopMenu";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import "./App.min.css";
-import ProtectedRoutes from "./components/ProtectedRoutes";
 
 const Admin = lazy(() => import("./views/admin/Admin"));
-
-
-
-
-
-
-
-
 
 
 const HomeView = lazy(() => import("./views/Home"));
@@ -24,7 +16,7 @@ const SignInView = lazy(() => import("./views/account/SignIn"));
 const SignUpView = lazy(() => import("./views/account/SignUp"));
 const ForgotPasswordView = lazy(() => import("./views/account/ForgotPassword"));
 const OrdersView = lazy(() => import("./views/account/Orders"));
-const SingleOrder = lazy(() => import("./views/account/SingleOrder"))
+const SingleOrder = lazy(()=>import("./views/account/SingleOrder"))
 const WishlistView = lazy(() => import("./views/account/Wishlist"));
 const NotificationView = lazy(() => import("./views/account/Notification"));
 const MyProfileView = lazy(() => import("./views/account/MyProfile"));
@@ -41,18 +33,32 @@ const SupportView = lazy(() => import("./views/pages/Support"));
 const BlogView = lazy(() => import("./views/blog/Blog"));
 const BlogDetailView = lazy(() => import("./views/blog/Detail"));
 
+
+
+const PrivateRoute = (props) => {
+  const location = useLocation();
+  const { authLogin } = useContext(globalC);
+
+  console.log("authLogin:", authLogin);
+
+  return authLogin ? (
+    <Route {...props} />
+  ) : (
+    <Redirect
+      to={{
+        pathname: "/account/signin",
+        state: { from: location }
+      }}
+    />
+  );
+};
+
+
 function App() {
 
 
   return (
     <BrowserRouter>
-
-      <React.Fragment>
-      <Switch>
-            <Route exact path="/admin" component={Admin} />
-      </Switch>
-
-      </React.Fragment>
       <React.Fragment>
         <Header />
         <TopMenu />
@@ -61,6 +67,8 @@ function App() {
             <div className="text-white text-center mt-3">Loading...</div>
           }
         >
+
+
           <Switch>
             <Route exact path="/" component={HomeView} />
             <Route exact path="/account/signin" component={SignInView} />
@@ -71,10 +79,10 @@ function App() {
               component={ForgotPasswordView}
             />
 
-            <Route exact path="/account/profile" component={MyProfileView} />
-            <Route exact path="/account/orders" component={OrdersView} />
-            <Route exact path="/account/order/details" component={SingleOrder} />
-            <Route exact path="/account/wishlist" component={WishlistView} />
+            <PrivateRoute exact path="/account/profile" component={MyProfileView} />
+            <PrivateRoute exact path="/account/orders" component={OrdersView} />
+            <PrivateRoute exact path="/account/order/details/:orderId" component={SingleOrder} />
+            <PrivateRoute exact path="/account/wishlist" component={WishlistView} />
             <Route
               exact
               path="/account/notification"
@@ -87,8 +95,8 @@ function App() {
 
 
             <Route exact path="/star/zone" component={StarZoneView} />
-            <Route exact path="/cart" component={CartView} />
-            <Route exact path="/checkout" component={CheckoutView} />
+            <PrivateRoute exact path="/cart" component={CartView} />
+            <PrivateRoute exact path="/checkout" component={CheckoutView} />
             <Route exact path="/documentation" component={DocumentationView} />
             <Route exact path="/contact-us" component={ContactUsView} />
             <Route exact path="/support" component={SupportView} />

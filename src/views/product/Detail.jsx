@@ -1,6 +1,11 @@
-import React, { Component, lazy } from "react";
+import React, { useEffect,useState,useParams,useContext, lazy } from "react";
+import { loadState } from "../../localStorage";
+import { productService,cartService } from "../../axios";
+import { globalC } from "../../Context";
 import { ReactComponent as IconStarFill } from "bootstrap-icons/icons/star-fill.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import swal from 'sweetalert';
+
 import {
   faCartPlus,
   faHeart,
@@ -9,6 +14,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { data } from "../../data";
+import Product from "../cart/Product";
 const CardFeaturedProduct = lazy(() =>
   import("../../components/card/CardFeaturedProduct")
 );
@@ -24,12 +30,122 @@ const ShippingReturns = lazy(() =>
   import("../../components/others/ShippingReturns")
 );
 const SizeChart = lazy(() => import("../../components/others/SizeChart"));
-class ProductDetailView extends Component {
-  constructor(props) {
-    super();
-    this.state = {};
+
+
+
+const ProductDetailView = ({match}) =>{
+
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
+  const [isLoading,setIsLoading] = useState(true)
+
+
+
+  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
+
+  const { params: { slug }, } = match;
+
+
+  const [product, setProduct] = useState({})
+
+
+  const getProductBySlug = (slug) =>{
+
+    productService.get(`get/product/`+slug)
+    .then(res =>{
+
+      console.log(res.data)
+      setProduct(res.data)
+    })
+    .catch(err=>{
+      console.log(err.response.data)
+    })
+
+
   }
-  render() {
+
+
+  
+
+  const addTocart = (product) =>{
+
+
+    const values ={
+      "username":authLogin.user_name,
+      "product":product
+    }
+    
+    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
+    .then(res => {
+
+      if(res.data.length === 0){
+        swal({
+          title: "Done!",
+          text: "Added To The Cart",
+          icon: "success",
+          timer: 2000,
+          button: false
+        })
+      }else{
+        swal({
+          title: "yaeHOO!",
+          text: "Already in the Cart",
+          icon: "warning",
+          timer: 2000,
+          button: false
+        })
+      }
+
+    })
+    .catch(err => console.log(err))
+  }
+
+
+  const addToWishList = (product) =>{
+    
+    const values ={
+      "username":authLogin.user_name,
+      "product":product
+    }
+
+
+  cartService.post('add-to-wish-list',values,{ headers: {"Authorization" : `Bearer ${token}`} })
+  .then(res => {
+
+    if(res.data.length === 0){
+      // alert("Addedd")
+
+      swal({
+        title: "Done!",
+        text: "Added To The WishList",
+        icon: "success",
+        timer: 2000,
+        button: false
+      })
+    }else{
+      swal({
+        title: "yeaHOO!",
+        text: "Already In the WishList",
+        icon: "warning",
+        timer: 2000,
+        button: false
+      })
+    }
+
+  })
+  .catch(err => console.log(err))
+
+
+  }
+
+
+  useEffect(()=>{
+
+    getProductBySlug(slug)
+
+  },[])
+
+  console.log(product)
+
     return (
       <div className="container-fluid mt-3">
         <div className="row">
@@ -37,7 +153,7 @@ class ProductDetailView extends Component {
             <div className="row mb-3">
               <div className="col-md-5 text-center">
                 <img
-                  src="../../images/products/tshirt_red_480x400.webp"
+                  //  src={image+product?.productImages[0]}
                   className="img-fluid mb-3"
                   alt=""
                 />
@@ -59,10 +175,10 @@ class ProductDetailView extends Component {
               </div>
               <div className="col-md-7">
                 <h1 className="h5 d-inline mr-2">
-                  Great product name goes here
+                  {product.productTitle}
                 </h1>
-                <span className="badge bg-success mr-2">New</span>
-                <span className="badge bg-danger mr-2">Hot</span>
+                {/* <span className="badge bg-success mr-2">New</span>
+                <span className="badge bg-danger mr-2">Hot</span> */}
                 <div className="mb-3">
                   <IconStarFill className="text-warning mr-1" />
                   <IconStarFill className="text-warning mr-1" />
@@ -78,7 +194,9 @@ class ProductDetailView extends Component {
                   <dd className="col-sm-9">In stock</dd>
                   <dt className="col-sm-3">Sold by</dt>
                   <dd className="col-sm-9">Authorised Store</dd>
-                  <dt className="col-sm-3">Size</dt>
+
+
+                  {/* <dt className="col-sm-3">Size</dt>
                   <dd className="col-sm-9">
                     <div className="form-check form-check-inline">
                       <input
@@ -147,42 +265,29 @@ class ProductDetailView extends Component {
                     <button className="btn btn-sm btn-warning p-2 mr-2"></button>
                     <button className="btn btn-sm btn-info p-2 mr-2"></button>
                     <button className="btn btn-sm btn-dark p-2 mr-2"></button>
-                  </dd>
+                  </dd> */}
                 </dl>
 
                 <div className="mb-3">
-                  <span className="font-weight-bold h5 mr-2">$1900</span>
-                  <del className="small text-muted mr-2">$2000</del>
+                  <span className="font-weight-bold h5 mr-2">{product.productFinalPrice}</span>
+
+                  {product.discountPercentage > 0 && (
+                    <>
+                  <del className="small text-muted mr-2">{product.productOriginalPrice}</del>
                   <span className="rounded p-1 bg-warning  mr-2 small">
-                    -$100
-                  </span>
+                    {product.discountPercentage + "%"}
+                  </span></>
+
+                  )}
+
                 </div>
                 <div className="mb-3">
-                  <div className="d-inline float-left mr-2">
-                    <div className="input-group input-group-sm mw-140">
-                      <button
-                        className="btn btn-primary text-white"
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon={faMinus} />
-                      </button>
-                      <input
-                        type="text"
-                        className="form-control"
-                        defaultValue="1"
-                      />
-                      <button
-                        className="btn btn-primary text-white"
-                        type="button"
-                      >
-                        <FontAwesomeIcon icon={faPlus} />
-                      </button>
-                    </div>
-                  </div>
+                 
                   <button
                     type="button"
                     className="btn btn-sm btn-primary mr-2"
                     title="Add to cart"
+                    onClick={()=>addTocart(product)}
                   >
                     <FontAwesomeIcon icon={faCartPlus} /> Add to cart
                   </button>
@@ -197,6 +302,8 @@ class ProductDetailView extends Component {
                     type="button"
                     className="btn btn-sm btn-outline-secondary"
                     title="Add to wishlist"
+                    onClick={()=>addToWishList(product)}
+
                   >
                     <FontAwesomeIcon icon={faHeart} />
                   </button>
@@ -206,11 +313,7 @@ class ProductDetailView extends Component {
                     Product Highlights
                   </p>
                   <ul className="small">
-                    <li>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    </li>
-                    <li>Etiam ullamcorper nibh eget faucibus dictum.</li>
-                    <li>Cras consequat felis ut vulputate porttitor.</li>
+                    <p>{product.productOverview}</p>
                   </ul>
                 </div>
               </div>
@@ -230,7 +333,7 @@ class ProductDetailView extends Component {
                     >
                       Details
                     </a>
-                    <a
+                    {/* <a
                       className="nav-link"
                       id="nav-randr-tab"
                       data-toggle="tab"
@@ -240,8 +343,8 @@ class ProductDetailView extends Component {
                       aria-selected="false"
                     >
                       Ratings & Reviews
-                    </a>
-                    <a
+                    </a> */}
+                    {/* <a
                       className="nav-link"
                       id="nav-faq-tab"
                       data-toggle="tab"
@@ -251,7 +354,7 @@ class ProductDetailView extends Component {
                       aria-selected="false"
                     >
                       Questions and Answers
-                    </a>
+                    </a> */}
                     <a
                       className="nav-link"
                       id="nav-ship-returns-tab"
@@ -263,7 +366,7 @@ class ProductDetailView extends Component {
                     >
                       Shipping & Returns
                     </a>
-                    <a
+                    {/* <a
                       className="nav-link"
                       id="nav-size-chart-tab"
                       data-toggle="tab"
@@ -273,7 +376,7 @@ class ProductDetailView extends Component {
                       aria-selected="false"
                     >
                       Size Chart
-                    </a>
+                    </a> */}
                   </div>
                 </nav>
                 <div className="tab-content p-3 small" id="nav-tabContent">
@@ -283,9 +386,11 @@ class ProductDetailView extends Component {
                     role="tabpanel"
                     aria-labelledby="nav-details-tab"
                   >
-                    <Details />
+                    <Details data={product.productDescription}/>
                   </div>
-                  <div
+
+
+                  {/* <div
                     className="tab-pane fade"
                     id="nav-randr"
                     role="tabpanel"
@@ -294,8 +399,9 @@ class ProductDetailView extends Component {
                     {Array.from({ length: 5 }, (_, key) => (
                       <RatingsReviews key={key} />
                     ))}
-                  </div>
-                  <div
+                  </div> */}
+
+                  {/* <div
                     className="tab-pane fade"
                     id="nav-faq"
                     role="tabpanel"
@@ -306,7 +412,9 @@ class ProductDetailView extends Component {
                         <QuestionAnswer key={key} />
                       ))}
                     </dl>
-                  </div>
+                  </div> */}
+
+
                   <div
                     className="tab-pane fade"
                     id="nav-ship-returns"
@@ -315,26 +423,30 @@ class ProductDetailView extends Component {
                   >
                     <ShippingReturns />
                   </div>
-                  <div
+
+
+                  {/* <div
                     className="tab-pane fade"
                     id="nav-size-chart"
                     role="tabpanel"
                     aria-labelledby="nav-size-chart-tab"
                   >
                     <SizeChart />
-                  </div>
+                  </div> */}
+
+
+
                 </div>
               </div>
             </div>
           </div>
           <div className="col-md-4">
-            <CardFeaturedProduct data={data.products} />
+            {/* <CardFeaturedProduct data={data.products} /> */}
             <CardServices />
           </div>
         </div>
       </div>
-    );
-  }
+    )
 }
 
 export default ProductDetailView;

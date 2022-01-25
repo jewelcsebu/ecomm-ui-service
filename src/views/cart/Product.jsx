@@ -1,6 +1,6 @@
 
-import React, { useState,useEffect, lazy } from "react";
-
+import React, { useState, useEffect, lazy } from "react";
+import { loadState } from "../../localStorage";
 import { Link } from "react-router-dom";
 import { ReactComponent as IconHeartFill } from "bootstrap-icons/icons/heart-fill.svg";
 import { ReactComponent as IconTrash } from "bootstrap-icons/icons/trash.svg";
@@ -9,66 +9,25 @@ import { ReactComponent as IconChevronLeft } from "bootstrap-icons/icons/chevron
 import { ReactComponent as IconTruck } from "bootstrap-icons/icons/truck.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
-import {productService} from '../../axios'
+import { productService, cartService } from '../../axios'
 
 var axios = require('axios');
 const CouponApplyForm = lazy(() =>
   import("../../components/others/CouponApplyForm")
 );
 
-
-const Product = ({data}) =>{
-
-    //console.log(data)
-    const [product,setProduct] = useState({});
-
-    const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
-  
-    const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
-  
-    // const getProductByProductId = () =>{
-      
-    //   productService.get(`get/product?productId=`+data.productId)
-    //   .then(res => {
-    //     console.log('fetch cart item',res.data.data.productImages)
-    //     console.log('fetch cart item',res.data.data)
-    //     setProduct(res.data.data)
-    //   })
-    //   .catch(err => console.log(err))
-    // }
-  
-    // useEffect(()=>{
-  
-    //   getProductByProductId()
-  
-    // },[])
+const Product = ({ data, handleRemove, handleIncreaseQuantity, handleDecrementQuantity }) => {
 
 
+  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
-var config = {
-  method: 'get',
-  url: 'http://localhost:8200/api/v1/product-service/get/product?productId=3',
-  headers: { }
-};
-
-axios(config)
-.then(function (response) {
-  setProduct(JSON.stringify(response.data))
-  console.log(response.data)
-})
-.catch(function (error) {
-  console.log(error);
-});
-  
-console.log('useSate',product)
-  
-    return(
-      <tr>
+  return (
+    <tr>
       <td>
         <div className="row">
           <div className="col-3 d-none d-md-block">
             <img
-              src="{image+product.productImages[0]}"
+              src={image + data.product.productImages[0]}
               width="80"
               alt="..."
             />
@@ -78,9 +37,9 @@ console.log('useSate',product)
               to="/product/detail"
               className="text-decoration-none"
             >
-              {product.productTitle}
+              {data.product.productTitle}
             </Link>
-            
+
           </div>
         </div>
       </td>
@@ -89,38 +48,50 @@ console.log('useSate',product)
           <button
             className="btn btn-primary text-white"
             type="button"
+            onClick={() => data.product.quantity > 1 ? handleDecrementQuantity(data.id) : null}
           >
             <FontAwesomeIcon icon={faMinus} />
           </button>
-          <input
-            type="text"
-            className="form-control"
-            defaultValue="1"
-          />
+
+          <p style={{ padding: "10px" }}>{data.product.quantity}</p>
+
           <button
             className="btn btn-primary text-white"
             type="button"
+            onClick={() => handleIncreaseQuantity(data.id)}
           >
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
       </td>
+
+
       <td>
-        <var className="price"> {product.productFinalPrice} each</var>
-        <del className="d-block text-muted">
-          {product.productOriginalPrice} 
-        </del>
+        <var className="price"> {data.product.productFinalPrice} each</var>
+        {data.product.discountPercentage > 0 && (
+          <del className="d-block text-muted">
+            {data.product.productOriginalPrice}
+          </del>
+        )}
       </td>
+
+      <td>
+        <var className="Sub-Total"> {data.product.productFinalPrice*data.product.quantity}</var>
+      </td>
+
+
       <td className="text-right">
-        <button className="btn btn-sm btn-outline-secondary mr-2">
+        {/* <button className="btn btn-sm btn-outline-secondary mr-2">
           <IconHeartFill className="i-va" />
-        </button>
-        <button className="btn btn-sm btn-outline-danger">
+        </button> */}
+        <button className="btn btn-sm btn-outline-danger" onClick={() => handleRemove(data.id)}>
           <IconTrash className="i-va" />
         </button>
       </td>
-    </tr>
-    )
-  }
 
-  export default Product
+
+    </tr>
+  )
+}
+
+export default Product

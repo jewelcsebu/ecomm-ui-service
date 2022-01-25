@@ -1,5 +1,6 @@
-import React ,{ useState } from "react";
+import React ,{ useState,useContext } from "react";
 import {cartService} from '../../axios'
+import { globalC } from "../../Context";
 import qs from 'qs';
 
 import { Link } from "react-router-dom";
@@ -11,38 +12,12 @@ import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const CardProductList = (props) => {
 
-  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
 
+  const { authLogin,token,authLoginDetail } = useContext(globalC);
 
-  const token = "3f90766b-5e4e-4f1b-ad62-d69e3dd20236";
-
-  const addTocart = (id) =>{
-
-    console.log(id)
-    const values ={
-      "customerId":3,
-      "productId":id
-  }
-    
-    cartService.post('add-to-cart',values,{ headers: {"Authorization" : `Bearer ${token}`} })
-    .then(res => {
-
-      if(res.data.length === 0){
-        alert("Addedd")
-      }else{
-        alert("Already Addedd")
-      }
-
-    })
-    .catch(err => console.log(err))
-  }
-
-
-  const product = props.data;
-
-
-  console.log('category url',product)
   
+  const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
+  const product = props.data;
   return (
     <div className="card">
       <div className="row g-0">
@@ -52,7 +27,7 @@ const CardProductList = (props) => {
         <div className="col-md-6">
           <div className="card-body">
             <h6 className="card-subtitle mr-2 d-inline">
-              <Link to={product.productSlug} className="text-decoration-none">
+            <Link to={'product/detail/'+product.productSlug}  className="text-decoration-none">
                 {product.productTitle}
               </Link>
             </h6>
@@ -91,17 +66,15 @@ const CardProductList = (props) => {
           <div className="card-body">
           <div className="mb-2">
             <span className="font-weight-bold h5">${product.productFinalPrice}</span>
-            {product.productOriginalPrice > 0 && (
+            {product.discountPercentage > 0 && (
               <del className="small text-muted ml-2">
                 ${product.productOriginalPrice}
               </del>
             )}
-            {(product.discountPercentage > 0 || product.productFinalPrice > 0) && (
+            {(product.discountPercentage > 0) && (
               <span className={`rounded p-1 bg-warning ml-2 small`}>
-                -
-                {product.discountPercentage > 0
-                  ? product.discountPercentage + "%"
-                  : "$" + product.productFinalPrice}
+                
+                { "-"+product.discountPercentage + "%"}
               </span>
             )}
           </div>
@@ -116,7 +89,7 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-primary"
               title="Add to cart"
-              onClick={()=>addTocart(product.id)}
+              onClick={()=>props.addTocartHandler(authLogin.user_name,product)}
             >
               <FontAwesomeIcon icon={faCartPlus} />
             </button>
@@ -124,6 +97,8 @@ const CardProductList = (props) => {
               type="button"
               className="btn btn-sm btn-outline-secondary"
               title="Add to wishlist"
+              onClick={()=>props.addToWishListHandler(authLogin.user_name,product)}
+
             >
               <FontAwesomeIcon icon={faHeart} />
             </button>
