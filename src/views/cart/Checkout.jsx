@@ -64,31 +64,31 @@ const CheckoutView = () => {
 
 
 
-  async function fetchRegion() {
-    shippingService.get(`get/regions`).then(res => {
-      setRegions(res.data)
-    }).catch(error => {
-      console.log(error)
-    })
-  }
+  // async function fetchRegion() {
+  //   shippingService.get(`get/regions`).then(res => {
+  //     setRegions(res.data)
+  //   }).catch(error => {
+  //     console.log(error)
+  //   })
+  // }
 
-  async function fetchCities(event) {
-    shippingService.get(`get/cities?regionId=${event.target.value}`).then(res => {
-      setCities(res.data)
-    }).catch(error => {
-      console.log(error)
-    })
-  }
+  // async function fetchCities(event) {
+  //   shippingService.get(`get/cities?regionId=${event.target.value}`).then(res => {
+  //     setCities(res.data)
+  //   }).catch(error => {
+  //     console.log(error)
+  //   })
+  // }
 
 
-  async function fetchAreas(event) {
-    shippingService.get(`get/areas?cityId=${event.target.value}`).then(res => {
-      setAreas(res.data)
+  // async function fetchAreas(event) {
+  //   shippingService.get(`get/areas?cityId=${event.target.value}`).then(res => {
+  //     setAreas(res.data)
 
-    }).catch(error => {
-      console.log(error)
-    })
-  }
+  //   }).catch(error => {
+  //     console.log(error)
+  //   })
+  // }
 
   const setPay = (value) => {
 
@@ -180,7 +180,7 @@ const CheckoutView = () => {
 
 
   useEffect(() => {
-    fetchRegion();
+    // fetchRegion();
     getCartProducts();
   }, []);
 
@@ -262,6 +262,35 @@ const CheckoutView = () => {
                     />
                   </div>
                   <div className="col-md-4">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Area"
+                      value={address2}
+                      onChange={address2Handler}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="City"
+                      value={address2}
+                      onChange={address2Handler}
+                    />
+                  </div>
+                  <div className="col-md-4">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Region"
+                      value={address2}
+                      onChange={address2Handler}
+                    />
+                  </div>
+
+{/*                   
+                  <div className="col-md-4">
 
                     {regions.length === 0
                       ? ""
@@ -308,7 +337,9 @@ const CheckoutView = () => {
                         )
                       })}
                     </select>
-                  </div>
+                  </div> */}
+
+
                 </div>
               </div>
             </div>

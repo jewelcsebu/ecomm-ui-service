@@ -37,19 +37,10 @@ const ProductDetailView = ({match}) =>{
 
   const { authLogin,token,authLoginDetail } = useContext(globalC);
   const [isLoading,setIsLoading] = useState(true)
-
-
-
   const image = "http://localhost:8200/api/v1/product-service/uploads/view/"
-
   const { params: { slug }, } = match;
-
-
   const [product, setProduct] = useState({})
-
-
   const getProductBySlug = (slug) =>{
-
     productService.get(`get/product/`+slug)
     .then(res =>{
 
